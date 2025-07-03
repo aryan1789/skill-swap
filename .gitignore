@@ -1,0 +1,15 @@
+# VS/Visual Studio stuff
+.vs/
+*.user
+*.suo
+
+# .NET build output
+**/bin/
+**/obj/
+
+# node_modules for frontend
+collab-sphere/node_modules/
+
+# local dev files
+*.env
+.vscode/
