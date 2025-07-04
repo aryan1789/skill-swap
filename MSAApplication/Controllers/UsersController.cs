@@ -48,6 +48,13 @@ namespace MSAApplication.Controllers
             return Ok(user);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _context.Users.ToListAsync();
+            return Ok(users);
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProfile(Guid id, [FromBody] User updated)
         {
@@ -57,6 +64,8 @@ namespace MSAApplication.Controllers
             user.Name = updated.Name;
             user.Bio = updated.Bio;
             user.isAvailable = updated.isAvailable;
+            user.Email = updated.Email;
+            user.Password = updated.Password;
 
             await _context.SaveChangesAsync();
             return NoContent();

@@ -18,9 +18,9 @@ const SkillSwap: React.FC = () => {
         <div style={{padding:'2rem'}}>
             <h2>SkillSwap</h2>
             <ul>
-                {users.map((user:any)=> (
+                {users.map((user)=> (
                     <li key={user.id}>
-                        {user.name} - {user.email}<br></br>
+                        <strong>{user.name}</strong> - {user.email}<br></br>
                         <i>{user.bio}</i>
                     </li>
                 ))}
