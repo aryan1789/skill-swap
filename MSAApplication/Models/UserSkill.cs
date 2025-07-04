@@ -7,6 +7,8 @@ namespace MSAApplication.Models
         public int Id { get; set; }
 
         public Guid UserId { get; set; }
+
+        [Required]
         public User User { get; set; }
 
         public int SkillId { get; set; }

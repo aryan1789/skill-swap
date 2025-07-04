@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration.UserSecrets;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using System.Xml;
 
 namespace MSAApplication.Models
 {
     public class User
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
         [MaxLength(30)]
