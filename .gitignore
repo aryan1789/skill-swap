@@ -8,7 +8,7 @@
 **/obj/
 
 # node_modules for frontend
-collab-sphere/node_modules/
+skill-swap/node_modules/
 
 # local dev files
 *.env

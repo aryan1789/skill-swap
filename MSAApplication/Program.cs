@@ -17,7 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-options.UseInMemoryDatabase("CollabSphereDB"));
+options.UseInMemoryDatabase("SkillSwapDB"));
 
 var app = builder.Build();
 
