@@ -33,7 +33,7 @@ const UserProfile: React.FC = () => {
     if(!user) return <p>Loading Profile...</p>
 
      return (
-    <div style={{ padding: "2rem" }}>
+    <div style={{ paddingTop:"70px",padding: "2rem" }}>
       <h2>My Profile</h2>
       <form onSubmit={handleSubmit}>
         <label>Name: </label><br />

@@ -5,11 +5,14 @@ import ProjectLink from './pages/ProjectLink'
 import UserProfile from './pages/UserProfile'
 import Login from './pages/Login'
 import SignUp from './pages/Signup'
+import React from 'react'
 import './App.css'
+import Navbar from './components/Navbar'
 
 const App: React.FC = () => {
   return (
     <Router>
+      <Navbar />
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/skillswap' element={<SkillSwap/>}/>

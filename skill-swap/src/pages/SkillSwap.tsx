@@ -15,7 +15,7 @@ const SkillSwap: React.FC = () => {
     });
     },[]);
     return (
-        <div style={{padding:'2rem'}}>
+        <div style={{paddingTop:"70px",padding:'2rem'}}>
             <h2>SkillSwap</h2>
             <ul>
                 {users.map((user)=> (
