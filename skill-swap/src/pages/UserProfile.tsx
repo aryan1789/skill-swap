@@ -3,7 +3,7 @@ import { useEffect,useState } from "react";
 import { getUserById,updateUserProfile } from "../api/userService";
 
 const UserProfile: React.FC = () => {
-    const userId = "dbd2e044-6e2a-4951-9343-fb303eb296c4";
+const userId = new URLSearchParams(window.location.search).get("id") || "";
     const [user,setUser] = useState<any>(null);
     const [name,setName] = useState("");
     const [bio,setBio] = useState("");
