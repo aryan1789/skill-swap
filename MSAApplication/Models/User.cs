@@ -23,6 +23,8 @@ namespace MSAApplication.Models
         [MaxLength(500)]
         public string? Bio {  get; set; }
         
+        [Required]
+        public string? Occupation { get; set; }
         public string? ProfilePictureUrl { get; set; }
 
         public bool isAvailable { get; set; }

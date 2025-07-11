@@ -1,9 +1,16 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useState,useEffect } from "react";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
-
+  const [userId, setUserId] = useState<string | null>(null);
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    if (storedUserId) {
+      setUserId(storedUserId);
+    }
+  }, []);
   return (
     <nav style={styles.navbar}>
       <div style={styles.title}>SkillSwap 🚀</div>
@@ -11,7 +18,12 @@ const Navbar: React.FC = () => {
         <NavLink to="/" current={location.pathname === "/"} label="Home" />
         <NavLink to="/skillswap" current={location.pathname === "/skillswap"} label="SkillSwap" />
         <NavLink to="/profile" current={location.pathname === "/profile"} label="Profile" />
-        <NavLink to="/login" current={location.pathname === "/login"} label="Login" />
+        {userId ? (
+          <Link to={`/viewprofile?id=${userId}`} style={styles.iconLink}>
+            <img src="Default_pfp.jpg" alt="Profile" style={{ width: "30px", height: "30px", borderRadius: "50%" }} />
+            </Link>
+        ):(<NavLink to="/login" current={location.pathname === "/login"} label="Login" />
+        )}
       </div>
     </nav>
   );

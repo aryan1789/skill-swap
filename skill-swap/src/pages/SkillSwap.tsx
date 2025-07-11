@@ -22,7 +22,7 @@ const SkillSwap: React.FC = () => {
                     <div key={user.id} style={styles.card}>
                         <img src={user.profilePicture || "Default_pfp.jpg"} alt={`${user.name}'s profile`} style={{ width: "100%", borderRadius: "12px" }} />
                         <h3>{user.name}</h3>
-                        <p><i>{user.bio}</i></p>
+                        <p><i>{user.occupation}</i></p>
                         <div style={styles.skillList}>
                             {user.userSkills?.map((us: any) => (
                                 <span key={us.skill.id} style={styles.skillBadge}>
@@ -31,7 +31,7 @@ const SkillSwap: React.FC = () => {
                             ))}
                         </div>
                         <div style={styles.buttonRow}>
-                            <button style={styles.button} onClick={() => window.location.href = `/profile?id=${user.id}`}>View Profile</button>
+                            <button style={styles.button} onClick={() => window.location.href = `/viewprofile?id=${user.id}`}>View Profile</button>
                             <button style={styles.swapButton} onClick={() => alert(`Swap request sent to ${user.name}`)}>Swap Skills</button>
                         </div>
                     </div>

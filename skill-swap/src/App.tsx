@@ -8,6 +8,7 @@ import SignUp from './pages/Signup'
 import React from 'react'
 import './App.css'
 import Navbar from './components/Navbar'
+import ViewProfile from './pages/ViewProfile'
 
 const App: React.FC = () => {
   return (
@@ -20,6 +21,7 @@ const App: React.FC = () => {
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup' element={<SignUp/>}/>
         <Route path='/profile' element={<UserProfile/>}/>
+        <Route path='/viewprofile' element={<ViewProfile/>}/>
       </Routes>
     </Router>
   )
