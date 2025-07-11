@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace MSAApplication.Models
 {
@@ -9,6 +10,7 @@ namespace MSAApplication.Models
         public Guid UserId { get; set; }
 
         [Required]
+        [JsonIgnore]
         public User User { get; set; }
 
         public int SkillId { get; set; }

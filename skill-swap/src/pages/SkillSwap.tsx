@@ -20,12 +20,13 @@ const SkillSwap: React.FC = () => {
             <div style={styles.cardGrid}>
                 {users.map((user) => (
                     <div key={user.id} style={styles.card}>
+                        <img src={user.profilePicture || "Default_pfp.jpg"} alt={`${user.name}'s profile`} style={{ width: "100%", borderRadius: "12px" }} />
                         <h3>{user.name}</h3>
                         <p><i>{user.bio}</i></p>
                         <div style={styles.skillList}>
                             {user.userSkills?.map((us: any) => (
                                 <span key={us.skill.id} style={styles.skillBadge}>
-                                    {us.skill.name}
+                                    {us.skill.skillName}
                                 </span>
                             ))}
                         </div>
@@ -42,12 +43,20 @@ const SkillSwap: React.FC = () => {
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
         paddingTop: "80px",
-        padding: "2rem",
+        paddingLeft: "1rem",
+        paddingRight: "1rem",
+        paddingBottom: "2rem",
+        margin: "0 auto",
+        width: "100%",
     },
     cardGrid: {
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+        padding: "0",
+        width: "100%",
+        gridTemplateColumns: "repeat(3, 1fr)",
         gap: "1.5rem",
+        textDecorationColor: "none",
+        color: "black",
     },
     card: {
         background: "#fff",
@@ -62,6 +71,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         gap: "0.5rem",
     },
     skillBadge: {
+        margin: "0 auto",
         background: "#e0f2ff",
         color: "#0077cc",
         padding: "0.3rem 0.6rem",
@@ -77,7 +87,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     button: {
         flex: 1,
-        backgroundColor: "#eee",
+        backgroundColor: "#4a4949",
         border: "none",
         padding: "0.5rem",
         borderRadius: "6px",

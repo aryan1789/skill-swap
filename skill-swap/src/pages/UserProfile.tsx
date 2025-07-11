@@ -4,7 +4,8 @@ import { getUserById,updateUserProfile } from "../api/userService";
 
 const UserProfile: React.FC = () => {
 const userId = new URLSearchParams(window.location.search).get("id") || "";
-    const [user,setUser] = useState<any>(null);
+
+const [user,setUser] = useState<any>(null);
     const [name,setName] = useState("");
     const [bio,setBio] = useState("");
     const [isAvailable, setIsAvailable] = useState(true);
@@ -61,7 +62,7 @@ const userId = new URLSearchParams(window.location.search).get("id") || "";
     <h3>Skills</h3>
     <ul>
       {user.userSkills.map((us: any) => (
-        <li key={us.skill.id}>{us.skill.name}</li>
+        <li key={us.skill.id}>{us.skill.skillName}</li>
       ))}
     </ul>
   </div>

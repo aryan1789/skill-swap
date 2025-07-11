@@ -17,12 +17,19 @@ namespace MSAApplication.Controllers
 
             if (!_context.Users.Any())
             {
-                _context.Users.AddRange(new[]
-                {
-                    new User { Name= "Aryan", Email= "aryan@example.com",Password="Password",Bio="SWE Student" },
-                    new User { Name= "Teena", Email= "teena@example.com",Password="Password",Bio= "Operations Lead" }
-                });
+                var skillReact = new Skill { SkillName = "React", Category = "Programming" };
+                var skillCS = new Skill { SkillName = "C#", Category = "Programming" };
 
+                _context.Skills.AddRange(skillReact, skillCS);
+                _context.SaveChanges(); //  Save first to generate IDs
+
+
+
+                var aryan = new User { Name= "Aryan", Email= "aryan@example.com",Password="Password",Bio="SWE Student",UserSkills = new List<UserSkill> { new UserSkill { SkillId = skillCS.Id, SkillType=SkillType.Offering,ProficiencyLevel=4,Notes="Comfortable with .NET backend"} } };
+                    var teena = new User { Name= "Teena", Email= "teena@example.com",Password="Password",Bio= "Operations Lead", UserSkills = new List<UserSkill> { new UserSkill { SkillId = skillReact.Id,SkillType=SkillType.Offering,ProficiencyLevel=3,Notes="dsfsdf" } } };
+                    var amit = new User {Name="Amit", Email="amit@example.com",Password="Password",Bio="Tax Accountant" };
+
+                _context.Users.AddRange(aryan, teena, amit);
                 _context.SaveChanges();
             }
         }
@@ -51,7 +58,10 @@ namespace MSAApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _context.Users.ToListAsync();
+            var users = await _context.Users
+                .Include(u => u.UserSkills)
+                .ThenInclude(us => us.Skill)
+                .ToListAsync();
             return Ok(users);
         }
 
