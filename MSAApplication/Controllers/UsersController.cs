@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSAApplication.Context;
@@ -93,6 +92,7 @@ namespace MSAApplication.Controllers
             user.isAvailable = updated.isAvailable;
             user.Email = updated.Email;
             user.Password = updated.Password;
+            //user.ProfilePictureUrl = updated.ProfilePictureUrl;
 
             await _context.SaveChangesAsync();
             return NoContent();

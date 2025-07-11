@@ -1,52 +1,140 @@
-import React from "react";
+import React, { useState } from "react";
+import "../Login.css";
+import { FaEye, FaEyeSlash,FaEnvelope,FaCircleNotch } from "react-icons/fa";
+
 
 const Login: React.FC = () => {
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsLoading(true);
+        setError("");
 
-        const response = await fetch("http://localhost:5209/api/users/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ email, password })
-        });
+        try {
+            const response = await fetch("http://localhost:5209/api/users/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, password })
+            });
 
-        if (response.ok) {
-            const data = await response.json();
-            alert("Login successful!");
-            localStorage.setItem("user", JSON.stringify(data));
-            localStorage.setItem("userId", data.id); // Store token for future requests
-            console.log("Login successful:", data);
-            window.location.href = "/"; // Redirect to home page
-            // Handle successful login (e.g., redirect to dashboard)
-        } else {
-            alert("Invalid email or password. Please try again.");
-            console.error("Login failed:", response.statusText);
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem("user", JSON.stringify(data));
+                localStorage.setItem("userId", data.id);
+                console.log("Login successful:", data);
+                window.location.href = "/profile";
+            } else {
+                const errorData = await response.json();
+                setError(errorData.message || "Invalid email or password. Please try again.");
+            }
+        } catch (err) {
+            setError("Network error. Please check your connection and try again.");
+            console.error("Login error:", err);
+        } finally {
+            setIsLoading(false);
         }
     };
 
+    const handlePasswordToggle = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const isValidEmail = (email: string) => {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    };
+
+    const canSubmit = email.trim() !== "" && password.trim() !== "" && isValidEmail(email);
+
     return (
-        <div style={{ padding: "2rem" }}>
-            <h2>Login</h2>
-            <form onSubmit={handleLogin}>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                /><br /><br />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                /><br /><br />
-                <button type="submit">Log In</button>
-            </form>
+        <div className="login-container">
+            <div className="login-card">
+                <div className="login-header">
+                    <h1>Welcome Back</h1>
+                    <p>Sign in to continue your skill-swapping journey</p>
+                </div>
+
+                <form onSubmit={handleLogin} className="login-form">
+                    {error && (
+                        <div className="error-message">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <circle cx="8" cy="8" r="8" fill="#FEF2F2" />
+                                <path d="M8 4V8M8 12H8.01" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" />
+                            </svg>
+                            {error}
+                        </div>
+                    )}
+
+                    <div className="form-group">
+                        <label htmlFor="email">Email Address</label>
+                        <div className="input-wrapper">
+                            <input
+                                id="email"
+                                type="email"
+                                placeholder="Enter your email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className={error ? "error" : ""}
+                                required
+                            />
+                            <FaEnvelope size={20} />
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="password">Password</label>
+                        <div className="input-wrapper">
+                            <input
+                                id="password"
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Enter your password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className={error ? "error" : ""}
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="password-toggle"
+                                onClick={handlePasswordToggle}
+                            >
+                                {showPassword ? (
+                                    <FaEye size={20} />
+                                ) : (
+                                    <FaEyeSlash size={20} />
+                                )}
+                            </button>
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="login-button"
+                        disabled={!canSubmit || isLoading}
+                    >
+                        {isLoading ? (
+                            <>
+                                <FaCircleNotch />
+
+                                Signing in...
+                            </>
+                        ) : (
+                            "Sign In"
+                        )}
+                    </button>
+                </form>
+
+                <div className="login-footer">
+                    <p>Don't have an account? <a href="/register">Sign up here</a></p>
+                    <p><a href="/forgot-password">Forgot your password?</a></p>
+                </div>
+            </div>
         </div>
     );
 };

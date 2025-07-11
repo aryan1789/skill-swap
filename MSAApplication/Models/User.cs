@@ -25,7 +25,9 @@ namespace MSAApplication.Models
         
         [Required]
         public string? Occupation { get; set; }
-        public string? ProfilePictureUrl { get; set; }
+
+       // [JsonPropertyName("profilePicUrl")]
+//        public string? ProfilePictureUrl { get; set; }
 
         public bool isAvailable { get; set; }
 
