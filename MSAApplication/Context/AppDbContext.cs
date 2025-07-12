@@ -26,6 +26,8 @@ namespace MSAApplication.Context
                 entity.Property(u => u.Email).IsRequired();
                 entity.Property(u => u.Password).IsRequired();
                 entity.Property(u => u.Bio).HasMaxLength(500);
+                entity.Property(u => u.CreatedAt).HasDefaultValueSql("NOW()");
+                
             });
 
             // Skill configuration
@@ -35,6 +37,7 @@ namespace MSAApplication.Context
                 entity.HasIndex(s => s.SkillName).IsUnique();
                 entity.Property(s => s.SkillName).IsRequired().HasMaxLength(100);
                 entity.Property(s => s.Category).HasMaxLength(50);
+                entity.Property(s => s.CreatedAt).HasDefaultValueSql("NOW()");
             });
 
             // UserSkill configuration (Many-to-Many with additional properties)
@@ -58,6 +61,7 @@ namespace MSAApplication.Context
                 entity.Property(us => us.ProficiencyLevel).IsRequired();
                 entity.Property(us => us.SkillType).IsRequired();
                 entity.Property(us => us.Notes).HasMaxLength(200);
+                entity.Property(us => us.CreatedAt).HasDefaultValueSql("NOW()");
             });
 
             // Seed some initial skills for testing

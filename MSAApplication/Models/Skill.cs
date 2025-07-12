@@ -16,7 +16,7 @@ namespace MSAApplication.Models
         [MaxLength(50)]
         public string? Category { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; }
 
         public ICollection<UserSkill> UserSkills { get; set; } = new List<UserSkill>();
     }

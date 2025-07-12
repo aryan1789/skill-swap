@@ -31,7 +31,7 @@ namespace MSAApplication.Models
 
         public bool isAvailable { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; }
         public ICollection<UserSkill> UserSkills { get; set; } = new List<UserSkill>();
     }
 }

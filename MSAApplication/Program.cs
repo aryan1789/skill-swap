@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Connections;
 using Microsoft.EntityFrameworkCore;
 using MSAApplication.Context;
 
@@ -20,9 +21,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-options.UseInMemoryDatabase("SkillSwapDB"));
+//options.UseInMemoryDatabase("SkillSwapDB"));
+options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+Console.WriteLine("=== DEBUG: Using connection string ===");
+Console.WriteLine(builder.Configuration.GetConnectionString("DefaultConnection"));
+Console.WriteLine("======================================");
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate(); // Applies pending migrations
+}
 
 if (app.Environment.IsDevelopment())
 {
