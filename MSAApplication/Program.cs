@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Connections;
 using Microsoft.EntityFrameworkCore;
 using MSAApplication.Context;
+using Supabase;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,11 +22,26 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-//options.UseInMemoryDatabase("SkillSwapDB"));
 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 Console.WriteLine("=== DEBUG: Using connection string ===");
 Console.WriteLine(builder.Configuration.GetConnectionString("DefaultConnection"));
 Console.WriteLine("======================================");
+
+builder.Services.AddSingleton(provider =>
+{
+    var configuration = builder.Configuration;
+    var url = configuration["Supabase:Url"];
+    var key = configuration["Supabase:Key"];
+
+    var options = new SupabaseOptions
+    {
+        AutoRefreshToken = true,
+        AutoConnectRealtime = false
+    };
+    var client = new Supabase.Client(url, key, options);
+    client.InitializeAsync().Wait();
+    return client;
+});
 
 var app = builder.Build();
 
