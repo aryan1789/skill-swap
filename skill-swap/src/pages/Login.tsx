@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../Login.css";
 import { FaEye, FaEyeSlash,FaEnvelope,FaCircleNotch } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 
 const Login: React.FC = () => {
@@ -9,6 +10,7 @@ const Login: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -16,7 +18,7 @@ const Login: React.FC = () => {
         setError("");
 
         try {
-            const response = await fetch("http://localhost:5209/api/users/login", {
+            const response = await fetch("http://localhost:5209/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -26,13 +28,13 @@ const Login: React.FC = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                localStorage.setItem("user", JSON.stringify(data));
-                localStorage.setItem("userId", data.id);
+                localStorage.setItem("token", `Bearer ${data.token}`);
+                localStorage.setItem("user", JSON.stringify(data.user));
                 console.log("Login successful:", data);
-                window.location.href = "/profile";
+                navigate("/profile");
             } else {
                 const errorData = await response.json();
-                setError(errorData.message || "Invalid email or password. Please try again.");
+                setError(errorData.error || "Invalid email or password. Please try again.");
             }
         } catch (err) {
             setError("Network error. Please check your connection and try again.");

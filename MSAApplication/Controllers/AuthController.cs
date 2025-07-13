@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MSAApplication.Context;
+using MSAApplication.Models;
 using Supabase;
 
 namespace MSAApplication.Controllers
@@ -9,21 +11,40 @@ namespace MSAApplication.Controllers
     public class AuthController : ControllerBase
     {
         private readonly Client _supabase;
-
-        public AuthController(Client supabase)
+        private readonly AppDbContext _context;
+        public AuthController(Client supabase,AppDbContext context)
         {
             _supabase = supabase;
+            _context = context;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] AuthRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             try
             {
                 var session = await _supabase.Auth.SignUp(request.Email, request.Password);
 
                 if (session?.User != null)
+                {
+                    var supabaseUserId = session.User.Id;
+                    var existingUser = _context.Users.FirstOrDefault(u => u.SupabaseUserId == supabaseUserId);
+                    if (existingUser == null)
+                    {
+                        var newUser = new User
+                        {
+                            SupabaseUserId = supabaseUserId,
+                            Email = session.User.Email,
+                            Name = request.Name,
+                            Occupation = request.Occupation,
+                            CreatedAt = DateTime.UtcNow,
+                        };
+                        _context.Users.Add(newUser);
+                        await _context.SaveChangesAsync();
+                    }
                     return Ok(new { message = "Registration successful", user = session.User });
+
+                }
 
                 return BadRequest(new { error = "Registration failed" });
             }
@@ -48,6 +69,9 @@ namespace MSAApplication.Controllers
         [HttpGet("user")]
         public async Task<IActionResult> GetUser([FromHeader(Name = "Authorization")] string bearer)
         {
+            if (string.IsNullOrWhiteSpace(bearer))
+                return Unauthorized(new { error = "Missing Authorization header" });
+
             var token = bearer.Replace("Bearer ", "");
             var user = await _supabase.Auth.GetUser(token);
 
@@ -58,10 +82,6 @@ namespace MSAApplication.Controllers
         }
     }
 
-    public class AuthRequest
-    {
-        public string Email { get; set; }
-        public string Password { get; set; }
-    }
+    
 }
         

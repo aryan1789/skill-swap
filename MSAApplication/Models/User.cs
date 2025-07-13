@@ -17,17 +17,15 @@ namespace MSAApplication.Models
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
-        public string Password { get; set; }
-
         [MaxLength(500)]
         public string? Bio {  get; set; }
         
         [Required]
         public string? Occupation { get; set; }
+        public string SupabaseUserId { get; set; }
 
        // [JsonPropertyName("profilePicUrl")]
-//        public string? ProfilePictureUrl { get; set; }
+       //        public string? ProfilePictureUrl { get; set; }
 
         public bool isAvailable { get; set; }
 

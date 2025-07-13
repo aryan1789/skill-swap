@@ -24,10 +24,9 @@ namespace MSAApplication.Context
                 entity.HasIndex(u => u.Email).IsUnique();
                 entity.Property(u => u.Name).IsRequired().HasMaxLength(100);
                 entity.Property(u => u.Email).IsRequired();
-                entity.Property(u => u.Password).IsRequired();
                 entity.Property(u => u.Bio).HasMaxLength(500);
                 entity.Property(u => u.CreatedAt).HasDefaultValueSql("NOW()");
-                
+                entity.HasIndex(u=>u.SupabaseUserId).IsUnique();
             });
 
             // Skill configuration
@@ -63,20 +62,6 @@ namespace MSAApplication.Context
                 entity.Property(us => us.Notes).HasMaxLength(200);
                 entity.Property(us => us.CreatedAt).HasDefaultValueSql("NOW()");
             });
-
-            // Seed some initial skills for testing
-            modelBuilder.Entity<Skill>().HasData(
-                new Skill { Id = 1, SkillName = "Python", Category = "Programming" },
-                new Skill { Id = 2, SkillName = "JavaScript", Category = "Programming" },
-                new Skill { Id = 3, SkillName = "React", Category = "Programming" },
-                new Skill { Id = 4, SkillName = "C#", Category = "Programming" },
-                new Skill { Id = 5, SkillName = "Excel", Category = "Office" },
-                new Skill { Id = 6, SkillName = "Photoshop", Category = "Design" },
-                new Skill { Id = 7, SkillName = "Guitar", Category = "Music" },
-                new Skill { Id = 8, SkillName = "Spanish", Category = "Language" },
-                new Skill { Id = 9, SkillName = "Marketing", Category = "Business" },
-                new Skill { Id = 10, SkillName = "Data Analysis", Category = "Analytics" }
-            );
         }
     }
 }
