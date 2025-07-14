@@ -30,6 +30,7 @@ const Login: React.FC = () => {
                 const data = await response.json();
                 localStorage.setItem("token", `Bearer ${data.token}`);
                 localStorage.setItem("user", JSON.stringify(data.user));
+                localStorage.setItem("userId", data.user.id); // Store user ID for later use
                 console.log("Login successful:", data);
                 navigate("/profile");
             } else {

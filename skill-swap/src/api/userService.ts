@@ -1,26 +1,37 @@
 import axios from "axios";
 
-const API = "http://localhost:5209/api/users";
+const BASE_URL = "http://localhost:5209/api/users";
 
+// GET all users
 export const getUsers = async () => {
-    const response = await axios.get(API);
-    return response.data;
-}
-
-export const getUserById = async (id:string) => {
-    const response = await axios.get(`${API}/${id}`);
-    return response.data;
-}
-
-export const createUser = async (user: {name: string, email: string }) => {
-    const response = await axios.post(API,user);
+    const response = await axios.get(BASE_URL);
     return response.data;
 };
 
+// GET user by Supabase ID
+export const getUserBySupabaseId = async (supabaseUserId: string) => {
+    const response = await axios.get(`${BASE_URL}/bysupabaseid/${supabaseUserId}`);
+    return response.data;
+};
+
+// PUT update user by user ID (your DB GUID)
 export const updateUserProfile = async (
     id: string,
-    updatedUser: {name: string; bio: string; isAvailable: boolean;email:string;password:string;/*profilePicUrl?: string*/}
+    updatedUser: {
+        name: string;
+        bio: string;
+        isAvailable: boolean;
+        email: string;
+        password: string;
+        // profilePicUrl?: string;
+    }
 ) => {
-    const response = await axios.put(`${API}/${id}`,updatedUser);
+    const response = await axios.put(`${BASE_URL}/${id}`, updatedUser);
+    return response.data;
+};
+
+// POST create user (used if needed separately from Supabase)
+export const createUser = async (user: { name: string; email: string }) => {
+    const response = await axios.post(BASE_URL, user);
     return response.data;
 };

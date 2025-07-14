@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSAApplication.Context;
 using MSAApplication.Models;
+using Npgsql;
 
 namespace MSAApplication.Controllers
 {
@@ -27,9 +28,28 @@ namespace MSAApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSkill([FromBody] Skill skill)
         {
+            var exists = await _context.Skills
+                .AnyAsync(s => s.SkillName.ToLower() == skill.SkillName.ToLower());
+
+            if (exists)
+            {
+                return Conflict(new { message = "Skill already exists." });
+            }
+
             _context.Skills.Add(skill);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetAllSkills),skill);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "Skill added successfully." });
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx &&
+                                                pgEx.SqlState == "23505")
+            {
+                // fallback guard — this should rarely trigger now
+                return Conflict(new { message = "Skill already exists (caught at DB level)." });
+            }
         }
+
     }
 }

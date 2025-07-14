@@ -25,7 +25,7 @@ namespace MSAApplication.Models
         public string SupabaseUserId { get; set; }
 
        // [JsonPropertyName("profilePicUrl")]
-       //        public string? ProfilePictureUrl { get; set; }
+               public string? ProfilePictureUrl { get; set; }
 
         public bool isAvailable { get; set; }
 

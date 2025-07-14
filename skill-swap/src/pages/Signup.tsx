@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [occupation, setOccupation] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const [error, setError] = useState("");
@@ -33,7 +35,7 @@ const handleSignUp = async (e: React.FormEvent) => {
       const response = await fetch("http://localhost:5209/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password,name,occupation }),
       });
 
       const result = await response.json();
@@ -68,6 +70,20 @@ const handleSignUp = async (e: React.FormEvent) => {
           onChange={(e) => setPassword(e.target.value)}
           required
         /><br /><br />
+        <input
+          type="text"
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          /><br /><br />
+        <input
+            type="text"
+            placeholder="Occupation"
+            value={occupation}
+            onChange={(e) => setOccupation(e.target.value)}
+            required
+            /><br /><br />
         <button type="submit">Register</button>
       </form>
 {error && <p style={{ color: "red" }}>{error}</p>}

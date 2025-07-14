@@ -23,24 +23,31 @@ namespace MSAApplication.Controllers
         {
             try
             {
+                Console.WriteLine($"Registering user: {request.Email}");
+
                 var session = await _supabase.Auth.SignUp(request.Email, request.Password);
 
                 if (session?.User != null)
                 {
                     var supabaseUserId = session.User.Id;
+                    Console.WriteLine($"Supabase ID received: {supabaseUserId}");
+
                     var existingUser = _context.Users.FirstOrDefault(u => u.SupabaseUserId == supabaseUserId);
                     if (existingUser == null)
                     {
                         var newUser = new User
                         {
                             SupabaseUserId = supabaseUserId,
-                            Email = session.User.Email,
-                            Name = request.Name,
-                            Occupation = request.Occupation,
+                            Email = session.User.Email ?? request.Email,
+                            Name = request.Name ?? "",
+                            Occupation = request.Occupation ?? "",
                             CreatedAt = DateTime.UtcNow,
+                            ProfilePictureUrl = null
                         };
                         _context.Users.Add(newUser);
                         await _context.SaveChangesAsync();
+
+                        Console.WriteLine("Saved new user to SQL DB.");
                     }
                     return Ok(new { message = "Registration successful", user = session.User });
 
@@ -50,6 +57,7 @@ namespace MSAApplication.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Registration Failed: {ex.Message}");
                 return BadRequest(new { error = ex.Message });
             }
         }
@@ -58,13 +66,21 @@ namespace MSAApplication.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] AuthRequest request)
         {
-            var session = await _supabase.Auth.SignIn(request.Email, request.Password);
+            try
+            {
+                var session = await _supabase.Auth.SignIn(request.Email, request.Password);
 
-            if (session != null && session.User != null)
-                return Ok(new { token = session.AccessToken, user = session.User });
+                if (session != null && session.User != null)
+                    return Ok(new { token = session.AccessToken, user = session.User });
 
-            return Unauthorized(new { error = "Invalid credentials" });
+                return Unauthorized(new { error = "Invalid credentials" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
+
 
         [HttpGet("user")]
         public async Task<IActionResult> GetUser([FromHeader(Name = "Authorization")] string bearer)

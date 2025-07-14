@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect,useState } from "react";
-import { getUserById } from "../api/userService";
+import { getUserBySupabaseId } from "../api/userService";
 
 const ViewProfile: React.FC = () => {
 const userId = new URLSearchParams(window.location.search).get("id") || "";
@@ -8,7 +8,7 @@ const userId = new URLSearchParams(window.location.search).get("id") || "";
 const [user,setUser] = useState<any>(null);
 
     useEffect(() => {
-        getUserById(userId)
+        getUserBySupabaseId(userId)
         .then((data) => {
             setUser(data);
         })

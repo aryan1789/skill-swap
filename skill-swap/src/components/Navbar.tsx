@@ -1,16 +1,43 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import { useState,useEffect } from "react";
+import React,{useEffect,useState,useRef} from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
   const [userId, setUserId] = useState<string | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+
+  const handleLogout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("userId");
+  setUserId(null);
+  setIsDropdownOpen(false);
+  navigate("/login");
+};
+
+useEffect(() => {
+  const storedUser = localStorage.getItem("user");
+  if (storedUser) {
+    const parsedUser = JSON.parse(storedUser);
+    setUserId(parsedUser.id);
+  }
+}, []);
+
+
   useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
-    if (storedUserId) {
-      setUserId(storedUserId);
+     const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setIsDropdownOpen(false);
     }
-  }, []);
+  };
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
   return (
     <nav style={styles.navbar}>
       <div style={styles.title}>SkillSwap 🚀</div>
@@ -19,11 +46,23 @@ const Navbar: React.FC = () => {
         <NavLink to="/skillswap" current={location.pathname === "/skillswap"} label="SkillSwap" />
         <NavLink to="/profile" current={location.pathname === "/profile"} label="Profile" />
         {userId ? (
-          <Link to={`/viewprofile?id=${userId}`} style={styles.iconLink}>
-            <img src="Default_pfp.jpg" alt="Profile" style={{ width: "30px", height: "30px", borderRadius: "50%" }} />
-            </Link>
-        ):(<NavLink to="/login" current={location.pathname === "/login"} label="Login" />
-        )}
+  <div style={{ position: "relative" }} ref={dropdownRef}>
+    <img
+      src="Default_pfp.jpg"
+      alt="Profile"
+      style={{ width: "30px", height: "30px", borderRadius: "50%", cursor: "pointer" }}
+      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+    />
+    {isDropdownOpen && (
+      <div style={styles.dropdownMenu}>
+        <Link to={`/viewprofile?id=${userId}`} style={styles.dropdownItem}>View Profile</Link>
+        <div onClick={handleLogout} style={styles.dropdownItem}>Logout</div>
+      </div>
+    )}
+  </div>
+) : (
+  <NavLink to="/login" current={location.pathname === "/login"} label="Login" />
+)}
       </div>
     </nav>
   );
@@ -70,6 +109,29 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderBottom: "2px solid white",
     paddingBottom: "2px",
   },
+  dropdownMenu: {
+  position: "absolute",
+  right: 0,
+  top: "40px",
+  backgroundColor: "#2e2e2e",
+  border: "1px solid #444",
+  borderRadius: "8px",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+  zIndex: 1001,
+  minWidth: "120px",
+  overflow: "hidden",
+},
+
+dropdownItem: {
+  padding: "10px 15px",
+  color: "white",
+  textDecoration: "none",
+  display: "block",
+  cursor: "pointer",
+  fontSize: "0.9rem",
+  borderBottom: "1px solid #3a3a3a",
+},
+
 };
 
 export default Navbar;

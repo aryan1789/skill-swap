@@ -1,35 +1,40 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { getUserById, updateUserProfile } from "../api/userService";
+import { getUserBySupabaseId, updateUserProfile } from "../api/userService";
 import "../UserProfile.css"; // Assuming you want to keep the same styles
 
 const UserProfile: React.FC = () => {
-  const userId = localStorage.getItem("userId") || "";
 
   const [user, setUser] = useState<any>(null);
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
   const [isAvailable, setIsAvailable] = useState(true);
   const [email, setEmail] = useState("");
+  const [occupation, setOccupation] = useState("");
   const [password, setPassword] = useState("");
+  const supabaseUserId = localStorage.getItem("userId") || "";
   //const [profilePicUrl, setProfilePicUrl] = useState("");
 
   useEffect(() => {
-    getUserById(userId)
+    if (!supabaseUserId) return;
+    getUserBySupabaseId(supabaseUserId)
       .then((data) => {
         setUser(data);
         setName(data.name);
-        setBio(data.bio);
-        setIsAvailable(data.isAvailable);
+        setBio(data.bio ?? "");
+        setIsAvailable(data.isAvailable ?? true);
         setEmail(data.email);
-        setPassword(data.password);
         //setProfilePicUrl(data.profilePicUrl || "");
       })
       .catch((err) => console.error("Failed to load user:", err));
-  }, [userId]);
+  }, [supabaseUserId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user?.id) {
+      alert("User ID not found");
+      return;
+    }
     console.log("Updating user profile with:", {
   name,
   bio,
@@ -38,16 +43,17 @@ const UserProfile: React.FC = () => {
   password
 });
 
-    await updateUserProfile(userId, {
+    await updateUserProfile(user.id, {
       name,
       bio,
       isAvailable,
       email,
-      password,
+      password:"",
       //profilePicUrl:user?.profilePicUrl ?? null,
     });
     alert("Profile Updated!");
   };
+
 
   // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   const file = e.target.files?.[0];

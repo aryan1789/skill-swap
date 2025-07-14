@@ -25,27 +25,44 @@ namespace MSAApplication.Controllers
 
 
 
-                var aryan = new User { Name= "Aryan", Email= "aryan@example.com",Occupation="SWE Student",Bio= ". I’m currently in my penultimate year of a Software Engineering degree at Auckland University of Technology, and I’m eager to gain real-world experience working on meaningful engineering projects alongside experienced mentors.", UserSkills = new List<UserSkill> { new UserSkill { SkillId = skillCS.Id, SkillType=SkillType.Offering,ProficiencyLevel=4,Notes="Comfortable with .NET backend"} } };
-                var teena = new User { Name= "Teena", Email= "teena@example.com",Occupation="Operations Lead",Bio= "Operations Lead", UserSkills = new List<UserSkill> { new UserSkill { SkillId = skillReact.Id,SkillType=SkillType.Offering,ProficiencyLevel=3,Notes="dsfsdf" } } };
-                var amit = new User {Name="Amit", Email="amit@example.com",Bio="Tax Accountant" };
+                var aryan = new User { Name= "Aryan", Email= "aryan@example.com",Occupation="SWE Student", UserSkills = new List<UserSkill> { new UserSkill { SkillId = skillCS.Id, SkillType=SkillType.Offering,ProficiencyLevel=4,Notes="Comfortable with .NET backend"} } };
+                var teena = new User { Name= "Teena", Email= "teena@example.com",Occupation="Operations Lead", UserSkills = new List<UserSkill> { new UserSkill { SkillId = skillReact.Id,SkillType=SkillType.Offering,ProficiencyLevel=3,Notes="dsfsdf" } } };
+                var amit = new User {Name="Amit", Email="amit@example.com" };
 
                 _context.Users.AddRange(aryan, teena, amit);
                 _context.SaveChanges();
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id) 
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetById(Guid id)
         {
             var user = await _context.Users
                 .Include(u => u.UserSkills)
                 .ThenInclude(us => us.Skill)
-                .FirstOrDefaultAsync(u =>u.Id==id);
+                .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null) return NotFound();
 
             return Ok(user);
         }
+
+        [HttpGet("bysupabaseid/{supabaseUserId}")]
+        public async Task<IActionResult> GetUserBySupabaseId(string supabaseUserId)
+        {
+            var user = await _context.Users
+                .Include(u => u.UserSkills)
+                .ThenInclude(us => us.Skill)
+                .FirstOrDefaultAsync(u => u.SupabaseUserId == supabaseUserId);
+
+            if (user == null) return NotFound();
+
+            return Ok(user);
+        }
+
+
+
+
 
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
