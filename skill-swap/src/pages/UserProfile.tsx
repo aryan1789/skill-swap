@@ -1,7 +1,8 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { getUserBySupabaseId, updateUserProfile } from "../api/userService";
-import "../UserProfile.css"; // Assuming you want to keep the same styles
+import "../UserProfile.css"; 
+import { useNavigate } from "react-router-dom";
 
 const UserProfile: React.FC = () => {
 
@@ -13,6 +14,7 @@ const UserProfile: React.FC = () => {
   const [occupation, setOccupation] = useState("");
   const [password, setPassword] = useState("");
   const supabaseUserId = localStorage.getItem("userId") || "";
+  const navigate = useNavigate();
   //const [profilePicUrl, setProfilePicUrl] = useState("");
 
   useEffect(() => {
@@ -52,6 +54,8 @@ const UserProfile: React.FC = () => {
       //profilePicUrl:user?.profilePicUrl ?? null,
     });
     alert("Profile Updated!");
+    setTimeout(() => navigate("/skillswap"),1500);
+
   };
 
 

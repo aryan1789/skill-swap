@@ -75,7 +75,7 @@ namespace MSAApplication.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProfile(Guid id, [FromBody] User updated)
+        public async Task<IActionResult> UpdateProfile(Guid id, [FromBody] UserUpdateRequest updated)
         {
             var user = await _context.Users.FindAsync(id);
             if(user == null) return NotFound();

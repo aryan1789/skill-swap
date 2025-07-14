@@ -31,7 +31,7 @@ const SkillSwap: React.FC = () => {
                             ))}
                         </div>
                         <div style={styles.buttonRow}>
-                            <button style={styles.button} onClick={() => window.location.href = `/viewprofile?id=${user.id}`}>View Profile</button>
+                            <button style={styles.button} onClick={() => window.location.href = `/viewprofile?id=${user.supabaseUserId}`}>View Profile</button>
                             <button style={styles.swapButton} onClick={() => alert(`Swap request sent to ${user.name}`)}>Swap Skills</button>
                         </div>
                     </div>

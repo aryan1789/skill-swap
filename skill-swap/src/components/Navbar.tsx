@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
-  const [userId, setUserId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(() => localStorage.getItem("userId"));
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -26,6 +26,23 @@ useEffect(() => {
   }
 }, []);
 
+useEffect(() => {
+  const syncUserId = () => {
+    const storedUserId = localStorage.getItem("userId");
+    setUserId(storedUserId);
+  };
+
+  // Run on mount and whenever location changes
+  syncUserId();
+
+  // Optional: listen to storage changes (in case of multi-tab logout/login)
+  window.addEventListener("storage", syncUserId);
+
+  return () => {
+    window.removeEventListener("storage", syncUserId);
+  };
+}, [location]);
+
 
   useEffect(() => {
      const handleClickOutside = (event: MouseEvent) => {
@@ -42,10 +59,12 @@ useEffect(() => {
     <nav style={styles.navbar}>
       <div style={styles.title}>SkillSwap 🚀</div>
       <div style={styles.links}>
+        {userId ? (
+          <>
         <NavLink to="/" current={location.pathname === "/"} label="Home" />
         <NavLink to="/skillswap" current={location.pathname === "/skillswap"} label="SkillSwap" />
         <NavLink to="/profile" current={location.pathname === "/profile"} label="Profile" />
-        {userId ? (
+        
   <div style={{ position: "relative" }} ref={dropdownRef}>
     <img
       src="Default_pfp.jpg"
@@ -60,8 +79,11 @@ useEffect(() => {
       </div>
     )}
   </div>
+  </>
 ) : (
+  <>
   <NavLink to="/login" current={location.pathname === "/login"} label="Login" />
+  </>
 )}
       </div>
     </nav>

@@ -9,19 +9,19 @@ import React from 'react'
 import './App.css'
 import Navbar from './components/Navbar'
 import ViewProfile from './pages/ViewProfile'
-
+import ProtectedRoute from './components/ProtectedRoute'
 const App: React.FC = () => {
   return (
     <Router>
       <Navbar />
       <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='/skillswap' element={<SkillSwap/>}/>
-        <Route path='/projectLink' element={<ProjectLink/>}/>
+        <Route path='/' element={<ProtectedRoute><Home/></ProtectedRoute>}/>
+        <Route path='/skillswap' element={<ProtectedRoute><SkillSwap/></ProtectedRoute>}/>
+        <Route path='/projectLink' element={<ProtectedRoute><ProjectLink/></ProtectedRoute>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/register' element={<SignUp/>}/>
-        <Route path='/profile' element={<UserProfile/>}/>
-        <Route path='/viewprofile' element={<ViewProfile/>}/>
+        <Route path='/profile' element={<ProtectedRoute><UserProfile/></ProtectedRoute>}/>
+        <Route path='/viewprofile' element={<ProtectedRoute><ViewProfile/></ProtectedRoute>}/>
       </Routes>
     </Router>
   )
