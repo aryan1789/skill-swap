@@ -12,6 +12,8 @@ namespace MSAApplication.Context
         public DbSet<User> Users { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<UserSkill> UserSkills { get; set; }
+        public DbSet<SkillSwapRequest> SkillSwapRequests { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

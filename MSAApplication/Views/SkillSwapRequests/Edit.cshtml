@@ -1,0 +1,59 @@
+﻿@model MSAApplication.Models.SkillSwapRequest
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>SkillSwapRequest</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="RequesterId" class="control-label"></label>
+                <select asp-for="RequesterId" class="form-control" asp-items="ViewBag.RequesterId"></select>
+                <span asp-validation-for="RequesterId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TargetUserId" class="control-label"></label>
+                <select asp-for="TargetUserId" class="form-control" asp-items="ViewBag.TargetUserId"></select>
+                <span asp-validation-for="TargetUserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OfferedSkillId" class="control-label"></label>
+                <select asp-for="OfferedSkillId" class="form-control" asp-items="ViewBag.OfferedSkillId"></select>
+                <span asp-validation-for="OfferedSkillId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TargetSkillId" class="control-label"></label>
+                <input asp-for="TargetSkillId" class="form-control" />
+                <span asp-validation-for="TargetSkillId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <input asp-for="Status" class="form-control" />
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedAt" class="control-label"></label>
+                <input asp-for="CreatedAt" class="form-control" />
+                <span asp-validation-for="CreatedAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
