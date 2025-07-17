@@ -65,7 +65,7 @@ namespace MSAApplication.Controllers
             return Ok(swap);
         }
 
-        [HttpGet("user/{userId")]
+        [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetByUser(Guid userId)
         {
             var swaps = await _context.SkillSwapRequests
