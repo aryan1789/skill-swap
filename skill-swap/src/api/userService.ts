@@ -1,5 +1,7 @@
 import axios from "axios";
 
+axios.defaults.baseURL = "http://localhost:5209/api";
+axios.defaults.headers.common["Authorization"] = localStorage.getItem("token") || "";
 const BASE_URL = "http://localhost:5209/api/users";
 
 // GET all users
@@ -10,7 +12,10 @@ export const getUsers = async () => {
 
 // GET user by Supabase ID
 export const getUserBySupabaseId = async (supabaseUserId: string) => {
-    const response = await axios.get(`${BASE_URL}/bysupabaseid/${supabaseUserId}`);
+    const token = localStorage.getItem("token") ?? "";
+    const response = await axios.get(`${BASE_URL}/bysupabaseid/${supabaseUserId}`,
+        {headers: { Authorization: token } }
+    );
     return response.data;
 };
 
@@ -34,4 +39,13 @@ export const updateUserProfile = async (
 export const createUser = async (user: { name: string; email: string }) => {
     const response = await axios.post(BASE_URL, user);
     return response.data;
+};
+
+// add right below getUserBySupabaseId
+export const getUserById = async (id: string) => {
+  const token = localStorage.getItem("token") ?? "";
+  const { data } = await axios.get(`${BASE_URL}/${id}`, {
+    headers: { Authorization: token },
+  });
+  return data;
 };

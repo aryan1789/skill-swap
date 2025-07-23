@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { getUserBySupabaseId, updateUserProfile } from "../api/userService";
+import { updateUserProfile,getUserBySupabaseId } from "../api/userService";
 import "../UserProfile.css"; 
 import { useNavigate } from "react-router-dom";
 
@@ -11,15 +11,15 @@ const UserProfile: React.FC = () => {
   const [bio, setBio] = useState("");
   const [isAvailable, setIsAvailable] = useState(true);
   const [email, setEmail] = useState("");
-  const [occupation, setOccupation] = useState("");
+  //const [occupation, setOccupation] = useState("");
   const [password, setPassword] = useState("");
-  const supabaseUserId = localStorage.getItem("userId") || "";
+  const supabaseUid = localStorage.getItem("supabaseUid") ?? "";
   const navigate = useNavigate();
   //const [profilePicUrl, setProfilePicUrl] = useState("");
 
   useEffect(() => {
-    if (!supabaseUserId) return;
-    getUserBySupabaseId(supabaseUserId)
+    if (!supabaseUid) return;
+    getUserBySupabaseId(supabaseUid)
       .then((data) => {
         setUser(data);
         setName(data.name);
@@ -29,7 +29,7 @@ const UserProfile: React.FC = () => {
         //setProfilePicUrl(data.profilePicUrl || "");
       })
       .catch((err) => console.error("Failed to load user:", err));
-  }, [supabaseUserId]);
+  }, [supabaseUid]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

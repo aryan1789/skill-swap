@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
-  const [userId, setUserId] = useState<string | null>(() => localStorage.getItem("userId"));
+  const [userId, setUserId] = useState<string | null>(() => localStorage.getItem("userGuid"));
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -12,24 +12,24 @@ const Navbar: React.FC = () => {
   const handleLogout = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("user");
-  localStorage.removeItem("userId");
+  localStorage.removeItem("userGuid");
+  localStorage.removeItem("supabaseUid");
   setUserId(null);
   setIsDropdownOpen(false);
   navigate("/login");
 };
 
 useEffect(() => {
-  const storedUser = localStorage.getItem("user");
-  if (storedUser) {
-    const parsedUser = JSON.parse(storedUser);
-    setUserId(parsedUser.id);
+  const storedUserGuid = localStorage.getItem("userGuid");
+  if (storedUserGuid) {
+    setUserId(storedUserGuid);
   }
 }, []);
 
 useEffect(() => {
   const syncUserId = () => {
-    const storedUserId = localStorage.getItem("userId");
-    setUserId(storedUserId);
+    const storedUserGuid = localStorage.getItem("userGuid");
+    setUserId(storedUserGuid);
   };
 
   // Run on mount and whenever location changes

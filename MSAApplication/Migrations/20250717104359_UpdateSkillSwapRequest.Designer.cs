@@ -3,6 +3,7 @@ using System;
 using MSAApplication.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MSAApplication.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250717104359_UpdateSkillSwapRequest")]
+    partial class UpdateSkillSwapRequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,7 +198,7 @@ namespace MSAApplication.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MSAApplication.Models.UserSkill", "TargetSkill")
+                    b.HasOne("MSAApplication.Models.UserSkill", "RequestedSkill")
                         .WithMany()
                         .HasForeignKey("TargetSkillId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -209,9 +212,9 @@ namespace MSAApplication.Migrations
 
                     b.Navigation("OfferedSkill");
 
-                    b.Navigation("Requester");
+                    b.Navigation("RequestedSkill");
 
-                    b.Navigation("TargetSkill");
+                    b.Navigation("Requester");
 
                     b.Navigation("TargetUser");
                 });

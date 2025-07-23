@@ -10,6 +10,7 @@ import './App.css'
 import Navbar from './components/Navbar'
 import ViewProfile from './pages/ViewProfile'
 import ProtectedRoute from './components/ProtectedRoute'
+import SwapRequests from './pages/SwapRequests'
 const App: React.FC = () => {
   return (
     <Router>
@@ -22,6 +23,7 @@ const App: React.FC = () => {
         <Route path='/register' element={<SignUp/>}/>
         <Route path='/profile' element={<ProtectedRoute><UserProfile/></ProtectedRoute>}/>
         <Route path='/viewprofile' element={<ProtectedRoute><ViewProfile/></ProtectedRoute>}/>
+        <Route path="/swap-requests" element={<ProtectedRoute><SwapRequests/></ProtectedRoute>}/>
       </Routes>
     </Router>
   )

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../Login.css";
 import { FaEye, FaEyeSlash,FaEnvelope,FaCircleNotch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { getUserBySupabaseId } from "../api/userService";
 
 
 const Login: React.FC = () => {
@@ -30,8 +31,8 @@ const Login: React.FC = () => {
                 const data = await response.json();
                 localStorage.setItem("token", `Bearer ${data.token}`);
                 localStorage.setItem("user", JSON.stringify(data.user));
-                localStorage.setItem("userId", data.user.id); // Store user ID for later use
-                console.log("Login successful:", data);
+                localStorage.setItem("userGuid", data.user.id);
+                localStorage.setItem("supabaseUid", data.user.id);
                 navigate("/profile");
             } else {
                 const errorData = await response.json();

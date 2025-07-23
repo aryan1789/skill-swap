@@ -22,16 +22,16 @@ namespace MSAApplication.Models
         public string? Status { get; set; } = "N/A"; // N/A, Pending, Accepted, Declined
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [ForeignKey("RequesterId")]
+        [ForeignKey(nameof(RequesterId))]
         public User? Requester { get; set; }
 
-        [ForeignKey("TargetUserId")]
+        [ForeignKey(nameof(TargetUserId))]
         public User? TargetUser { get; set; }
 
-        [ForeignKey("OfferedSkillId")]
+        [ForeignKey(nameof(OfferedSkillId))]
         public UserSkill? OfferedSkill { get; set; }
 
-        [ForeignKey("RequestedSkillId")]
-        public UserSkill? RequestedSkill { get; set; }
+        [ForeignKey(nameof(TargetSkillId))]
+        public UserSkill? TargetSkill { get; set; }
     }
 }
