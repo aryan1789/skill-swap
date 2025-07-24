@@ -3,22 +3,44 @@ import "../Login.css";
 import { FaEye, FaEyeSlash,FaEnvelope,FaCircleNotch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { getUserBySupabaseId } from "../api/userService";
+import { useAppDispatch, useAuth } from "../store/hooks";
+import { loginStart, loginSuccess, loginFailure } from "../store/userSlice";
 
 
 const Login: React.FC = () => {
+    // Form state (these stay local since they're just form inputs)
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    
+    // Redux hooks
+    const dispatch = useAppDispatch();
+    
+    // Debug: Log to see if Redux is working
+    console.log("Login component rendering...");
+    
+    let loading = false;
+    let error = null;
+    
+    try {
+        const authState = useAuth(); // Get loading and error from Redux
+        loading = authState.loading;
+        error = authState.error;
+        console.log("Auth state:", authState);
+    } catch (err) {
+        console.error("Error getting auth state:", err);
+    }
+    
     const navigate = useNavigate();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        setIsLoading(true);
-        setError("");
+        
+        // Dispatch Redux action to start login (sets loading to true)
+        dispatch(loginStart());
 
         try {
+            // Make API call to backend
             const response = await fetch("http://localhost:5209/auth/login", {
                 method: "POST",
                 headers: {
@@ -29,21 +51,34 @@ const Login: React.FC = () => {
 
             if (response.ok) {
                 const data = await response.json();
+                
+                // Get the database user using Supabase ID
+                const databaseUser = await getUserBySupabaseId(data.user.id);
+                
+                // Dispatch Redux action for successful login
+                dispatch(loginSuccess({
+                    user: databaseUser, // Store the full database user object
+                    token: `Bearer ${data.token}`,
+                    supabaseUid: data.user.id, // Supabase user ID
+                    userGuid: databaseUser.id   // Database user GUID
+                }));
+                
+                // Also store token in localStorage for API calls
                 localStorage.setItem("token", `Bearer ${data.token}`);
-                localStorage.setItem("user", JSON.stringify(data.user));
-                localStorage.setItem("userGuid", data.user.id);
-                localStorage.setItem("supabaseUid", data.user.id);
+                
+                // Navigate to profile page
                 navigate("/profile");
             } else {
                 const errorData = await response.json();
-                setError(errorData.error || "Invalid email or password. Please try again.");
+                // Dispatch Redux action for failed login
+                dispatch(loginFailure(errorData.error || "Invalid email or password. Please try again."));
             }
         } catch (err) {
-            setError("Network error. Please check your connection and try again.");
+            // Dispatch Redux action for network error
+            dispatch(loginFailure("Network error. Please check your connection and try again."));
             console.error("Login error:", err);
-        } finally {
-            setIsLoading(false);
         }
+        // Note: No finally block needed! Redux handles loading state
     };
 
     const handlePasswordToggle = () => {
@@ -120,9 +155,9 @@ const Login: React.FC = () => {
                     <button
                         type="submit"
                         className="login-button"
-                        disabled={!canSubmit || isLoading}
+                        disabled={!canSubmit || loading}
                     >
-                        {isLoading ? (
+                        {loading ? (
                             <>
                                 <FaCircleNotch />
 
