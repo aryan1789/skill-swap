@@ -4,7 +4,7 @@ import {
   getSkillSwapsForUser,
   updateSwapStatus,
 } from "../api/skillSwapService";
-import { getUserBySupabaseId } from "../api/userService";
+import { useAuth } from "../store/hooks";
 import "../SwapRequests.css";
 
 interface SwapRequest {
@@ -18,41 +18,45 @@ interface SwapRequest {
 
 export default function SwapRequests() {
   const navigate = useNavigate();
-  const supabaseUid = localStorage.getItem("supabaseUid") ?? "";
+  
+  // Redux hooks - get user data from store (no API call needed!)
+  const { currentUser, isLoggedIn } = useAuth();
+  
   const [incoming, setIncoming] = useState<SwapRequest[]>([]);
   const [outgoing, setOutgoing] = useState<SwapRequest[]>([]);
-  const [loading,  setLoading]  = useState(true);
+  const [loading, setLoading] = useState(true);
+  
+  console.log("SwapRequests - Redux user:", currentUser);
 
-  // fetch once on mount
+  // Redirect to login if not authenticated
   useEffect(() => {
-    if (!supabaseUid) {
+    if (!isLoggedIn) {
       navigate("/login");
       return;
     }
-    (async () => {
-  try {
-    // First get the database user using the Supabase ID
-    const user = await getUserBySupabaseId(supabaseUid);
-    if (!user?.id) {
-      console.error("User not found in database");
-      return;
-    }
+  }, [isLoggedIn, navigate]);
+
+  // Fetch swap requests using Redux user data (much simpler!)
+  useEffect(() => {
+    if (!currentUser?.id) return;
     
-    // Then get swap requests using the database user ID
-    const raw = await getSkillSwapsForUser(user.id);
-    // default to [] if the property is missing or null
-    const { incoming: inc = [], outgoing: out = [] } = raw;
+    (async () => {
+      try {
+        setLoading(true);
+        
+        // Direct API call with database user ID from Redux!
+        const raw = await getSkillSwapsForUser(currentUser.id);
+        const { incoming: inc = [], outgoing: out = [] } = raw;
 
-    setIncoming(inc);
-    setOutgoing(out);
-  } catch (err) {
-    console.error("Failed to fetch swap requests:", err);
-  } finally {
-    setLoading(false);
-  }
-})();
-
-  }, [supabaseUid, navigate]);
+        setIncoming(inc);
+        setOutgoing(out);
+      } catch (err) {
+        console.error("Failed to fetch swap requests:", err);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [currentUser?.id]);
 
   const handleStatus = async (id: string, status: "Accepted" | "Declined") => {
     try {

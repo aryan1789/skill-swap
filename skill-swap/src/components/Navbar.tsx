@@ -1,47 +1,30 @@
 import React,{useEffect,useState,useRef} from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth, useAppDispatch, useUserData } from "../store/hooks";
+import { logout } from "../store/userSlice";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
-  const [userId, setUserId] = useState<string | null>(() => localStorage.getItem("userGuid"));
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
-
+  
+  // Redux state - this automatically updates when login/logout happens!
+  const dispatch = useAppDispatch();
+  const { isLoggedIn, currentUser } = useAuth();
+  const { supabaseUid } = useUserData();
+  
+  console.log("Navbar - Auth state:", { isLoggedIn, currentUser, supabaseUid });
 
   const handleLogout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
-  localStorage.removeItem("userGuid");
-  localStorage.removeItem("supabaseUid");
-  setUserId(null);
-  setIsDropdownOpen(false);
-  navigate("/login");
-};
-
-useEffect(() => {
-  const storedUserGuid = localStorage.getItem("userGuid");
-  if (storedUserGuid) {
-    setUserId(storedUserGuid);
-  }
-}, []);
-
-useEffect(() => {
-  const syncUserId = () => {
-    const storedUserGuid = localStorage.getItem("userGuid");
-    setUserId(storedUserGuid);
+    // Dispatch Redux logout action (handles localStorage internally)
+    dispatch(logout());
+    
+    setIsDropdownOpen(false);
+    navigate("/login");
   };
 
-  // Run on mount and whenever location changes
-  syncUserId();
-
-  // Optional: listen to storage changes (in case of multi-tab logout/login)
-  window.addEventListener("storage", syncUserId);
-
-  return () => {
-    window.removeEventListener("storage", syncUserId);
-  };
-}, [location]);
+  // No more useEffect needed! Redux automatically updates the component
 
 
   useEffect(() => {
@@ -59,7 +42,7 @@ useEffect(() => {
     <nav style={styles.navbar}>
       <div style={styles.title}>SkillSwap 🚀</div>
       <div style={styles.links}>
-        {userId ? (
+        {isLoggedIn ? (
           <>
         <NavLink to="/" current={location.pathname === "/"} label="Home" />
         <NavLink to="/skillswap" current={location.pathname === "/skillswap"} label="SkillSwap" />
@@ -68,13 +51,13 @@ useEffect(() => {
   <div style={{ position: "relative" }} ref={dropdownRef}>
     <img
       src="Default_pfp.jpg"
-      alt="Profile"
+      alt={currentUser?.name || "Profile"}
       style={{ width: "30px", height: "30px", borderRadius: "50%", cursor: "pointer" }}
       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
     />
     {isDropdownOpen && (
       <div style={styles.dropdownMenu}>
-        <Link to={`/viewprofile?id=${userId}`} style={styles.dropdownItem}>View Profile</Link>
+        <Link to={`/viewprofile?id=${supabaseUid}`} style={styles.dropdownItem}>View Profile</Link>
         <div onClick={handleLogout} style={styles.dropdownItem}>Logout</div>
       </div>
     )}

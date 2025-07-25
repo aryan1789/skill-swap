@@ -15,22 +15,7 @@ const Login: React.FC = () => {
     
     // Redux hooks
     const dispatch = useAppDispatch();
-    
-    // Debug: Log to see if Redux is working
-    console.log("Login component rendering...");
-    
-    let loading = false;
-    let error = null;
-    
-    try {
-        const authState = useAuth(); // Get loading and error from Redux
-        loading = authState.loading;
-        error = authState.error;
-        console.log("Auth state:", authState);
-    } catch (err) {
-        console.error("Error getting auth state:", err);
-    }
-    
+    const { loading, error } = useAuth(); // Get loading and error from Redux
     const navigate = useNavigate();
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -55,16 +40,13 @@ const Login: React.FC = () => {
                 // Get the database user using Supabase ID
                 const databaseUser = await getUserBySupabaseId(data.user.id);
                 
-                // Dispatch Redux action for successful login
+                // Dispatch Redux action (handles localStorage internally)
                 dispatch(loginSuccess({
                     user: databaseUser, // Store the full database user object
                     token: `Bearer ${data.token}`,
                     supabaseUid: data.user.id, // Supabase user ID
                     userGuid: databaseUser.id   // Database user GUID
                 }));
-                
-                // Also store token in localStorage for API calls
-                localStorage.setItem("token", `Bearer ${data.token}`);
                 
                 // Navigate to profile page
                 navigate("/profile");
