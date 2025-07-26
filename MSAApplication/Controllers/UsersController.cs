@@ -89,5 +89,40 @@ namespace MSAApplication.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        [HttpGet("matchmaking/{userId}")]
+        public async Task<IActionResult> GetMatches(Guid userId)
+        {
+            // Get the skills the current user can offer
+            var myOfferedSkillIds = await _context.UserSkills
+                .Where(us => us.UserId == userId && us.SkillType == SkillType.Offering)
+                .Select(us => us.SkillId)
+                .ToListAsync();
+
+            // Get the skills the current user wants to learn
+            var myWantedSkillIds = await _context.UserSkills
+                .Where(us => us.UserId == userId && us.SkillType == SkillType.Seeking)
+                .Select(us => us.SkillId)
+                .ToListAsync();
+
+            // Find users who are a mutual match
+            var matches = await _context.Users
+                .Where(u => u.Id != userId)
+                .Where(u =>
+                    u.UserSkills.Any(us => myWantedSkillIds.Contains(us.SkillId) && us.SkillType == SkillType.Offering) &&
+                    u.UserSkills.Any(us => myOfferedSkillIds.Contains(us.SkillId) && us.SkillType == SkillType.Seeking)
+                )
+                .Select(u => new {
+                    u.Id,
+                    u.Name,
+                    u.ProfilePictureUrl,
+                    SkillsOffered = u.UserSkills.Where(us => us.SkillType == SkillType.Offering).Select(us => us.Skill.SkillName),
+                    SkillsSeeking = u.UserSkills.Where(us => us.SkillType == SkillType.Seeking).Select(us => us.Skill.SkillName)
+                })
+                .ToListAsync();
+
+            return Ok(matches);
+        }
+
     }
 }

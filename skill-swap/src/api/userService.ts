@@ -49,3 +49,8 @@ export const getUserById = async (id: string) => {
   });
   return data;
 };
+
+export const getMatches = async (userId: string) => {
+  const { data } = await axios.get(`/users/matchmaking/${userId}`);
+  return data;
+};

@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { getUsers } from "../api/userService";
+import { getUsers, getMatches } from "../api/userService";
 import SearchBar from "../components/SearchBar";
 import { getSSReqs } from "../api/skillSwapService"; // renamed helper
+import { useAppSelector } from "../store/hooks";
 
 const SkillSwap: React.FC = () => {
+  const userGuid = useAppSelector((state) => state.user.userGuid);
   const [users, setUsers] = useState<any[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
+  const [bestMatches, setBestMatches] = useState<any[]>([]);
   const [isSending, setIsSending] = useState(false);
 
   /* ------------------------------------------------------------------ */
@@ -19,7 +22,12 @@ const SkillSwap: React.FC = () => {
         setFilteredUsers(data);
       })
       .catch((err) => console.error("Failed to fetch users:", err));
-  }, []);
+    if (userGuid) {
+      getMatches(userGuid).then((matches) => {
+        setBestMatches(matches);
+      });
+    }
+  }, [userGuid]);
 
   /* ------------------------------------------------------------------ */
   /*                         SEARCH & SORT HELPERS                      */
@@ -141,8 +149,44 @@ const SkillSwap: React.FC = () => {
         />
       </div>
       <div style={styles.contentArea}>
+        {/* Best Matches Section */}
+        {bestMatches.length > 0 ? (
+          <div style={{ marginBottom: "2rem" }}>
+            <h3>Best Matches</h3>
+            <div style={styles.cardGrid}>
+              {bestMatches.map((user) => (
+                <div key={user.id} style={{ ...styles.card, border: "2px solid #3b82f6" }}>
+                  <span style={{ background: "#3b82f6", color: "#fff", borderRadius: "8px", padding: "0.2rem 0.7rem", fontWeight: 700, fontSize: "0.85rem", position: "absolute", marginTop: "-1.2rem", marginLeft: "-1.2rem" }}>Good Match</span>
+                  <img
+                    src={user.profilePictureUrl || "Default_pfp.jpg"}
+                    alt={`${user.name}'s profile`}
+                    style={{ width: "100%", borderRadius: "12px" }}
+                  />
+                  <h3>{user.name}</h3>
+                  <p><i>{user.occupation}</i></p>
+                  <p>Member since {new Date(user.createdAt).toLocaleDateString("en-NZ", { year: "numeric", month: "long", day: "numeric" })}</p>
+                  <div style={styles.skillList}>
+                    {user.skillsOffered?.map((skill: string, idx: number) => (
+                      <span key={idx} style={styles.skillBadge}>{skill}</span>
+                    ))}
+                  </div>
+                  <div style={styles.buttonRow}>
+                    <button style={styles.button} onClick={() => (window.location.href = `/viewprofile?id=${user.supabaseUserId}`)}>View Profile</button>
+                    <button style={styles.swapButton} onClick={() => handleSkillSwap(user)} disabled={isSending}>{isSending ? "Sending…" : "Swap Skills"}</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div style={{ marginBottom: "2rem" }}>
+            <h3>Best Matches</h3>
+            <p>No matches found.</p>
+          </div>
+        )}
+        {/* All Users Section (excluding best matches) */}
         <div style={styles.cardGrid}>
-          {filteredUsers.map((user) => (
+          {filteredUsers.filter(u => !bestMatches.some(m => m.id === u.id)).map((user) => (
             <div key={user.id} style={styles.card}>
               <img
                 src={user.profilePicture || "Default_pfp.jpg"}
@@ -150,45 +194,16 @@ const SkillSwap: React.FC = () => {
                 style={{ width: "100%", borderRadius: "12px" }}
               />
               <h3>{user.name}</h3>
-              <p>
-                <i>{user.occupation}</i>
-              </p>
-              <p>
-                Member since{" "}
-                {new Date(user.createdAt).toLocaleDateString("en-NZ", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </p>
-              {/* Skill list */}
+              <p><i>{user.occupation}</i></p>
+              <p>Member since {new Date(user.createdAt).toLocaleDateString("en-NZ", { year: "numeric", month: "long", day: "numeric" })}</p>
               <div style={styles.skillList}>
                 {user.userSkills?.map((us: any, index: number) => (
-                  <span
-                    key={`${user.id}-${us.id}-${index}`}
-                    style={styles.skillBadge}
-                  >
-                    {us.skill.skillName}
-                  </span>
+                  <span key={`${user.id}-${us.id}-${index}`} style={styles.skillBadge}>{us.skill.skillName}</span>
                 ))}
               </div>
-              {/* Buttons */}
               <div style={styles.buttonRow}>
-                <button
-                  style={styles.button}
-                  onClick={() =>
-                    (window.location.href = `/viewprofile?id=${user.supabaseUserId}`)
-                  }
-                >
-                  View Profile
-                </button>
-                <button
-                  style={styles.swapButton}
-                  onClick={() => handleSkillSwap(user)}
-                  disabled={isSending}
-                >
-                  {isSending ? "Sending…" : "Swap Skills"}
-                </button>
+                <button style={styles.button} onClick={() => (window.location.href = `/viewprofile?id=${user.supabaseUserId}`)}>View Profile</button>
+                <button style={styles.swapButton} onClick={() => handleSkillSwap(user)} disabled={isSending}>{isSending ? "Sending…" : "Swap Skills"}</button>
               </div>
             </div>
           ))}
@@ -226,6 +241,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: "12px",
     boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
     fontFamily: "Inter, sans-serif",
+    position: "relative",
   },
   skillList: { display: "flex", flexWrap: "wrap", gap: "0.5rem" },
   skillBadge: {
