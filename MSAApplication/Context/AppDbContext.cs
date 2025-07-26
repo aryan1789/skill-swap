@@ -13,6 +13,7 @@ namespace MSAApplication.Context
         public DbSet<Skill> Skills { get; set; }
         public DbSet<UserSkill> UserSkills { get; set; }
         public DbSet<SkillSwapRequest> SkillSwapRequests { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -63,6 +64,28 @@ namespace MSAApplication.Context
                 entity.Property(us => us.SkillType).IsRequired();
                 entity.Property(us => us.Notes).HasMaxLength(200);
                 entity.Property(us => us.CreatedAt).HasDefaultValueSql("NOW()");
+            });
+
+            // ChatMessage configuration
+            modelBuilder.Entity<ChatMessage>(entity =>
+            {
+                entity.HasKey(cm => cm.Id);
+
+                entity.HasOne(cm => cm.SkillSwapRequest)
+                    .WithMany()
+                    .HasForeignKey(cm => cm.SkillSwapRequestId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(cm => cm.Sender)
+                    .WithMany()
+                    .HasForeignKey(cm => cm.SenderId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.Property(cm => cm.MessageContent).IsRequired().HasMaxLength(1000);
+                entity.Property(cm => cm.SentAt).HasDefaultValueSql("NOW()");
+
+                // Index for efficient querying
+                entity.HasIndex(cm => new { cm.SkillSwapRequestId, cm.SentAt });
             });
         }
     }

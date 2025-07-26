@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Connections;
 using Microsoft.EntityFrameworkCore;
 using MSAApplication.Context;
+using MSAApplication.Hubs;
 using Supabase;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,8 @@ builder.Services.AddCors(options =>
         policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
     });
 });
+
+builder.Services.AddSignalR();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -62,4 +65,5 @@ app.UseHttpsRedirection();
 app.UseCors();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<ChatHub>("/chathub");
 app.Run();
