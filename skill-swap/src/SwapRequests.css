@@ -22,86 +22,201 @@ body, .swap-requests-page {
   margin-bottom: 2rem;
 }
 
+.swap-requests-3col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.column {
+  background: none;
+  padding: 0;
+}
+
 .request-card {
   display: flex;
   align-items: flex-start;
   gap: 1rem;
   background: var(--card-inverse);
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  padding: 1rem;
-  margin-bottom: 1rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 1.2rem 1rem;
+  margin-bottom: 1.5rem;
   color: var(--card-inverse-text);
+  transition: box-shadow 0.2s;
+  position: relative;
 }
 
-.request-card.outgoing {
-  opacity: 0.85;
+.request-card.accepted {
+  border: 2px solid #16a34a;
+  box-shadow: 0 0 0 2px #16a34a33;
+}
+
+.request-card.declined {
+  opacity: 0.6;
+  border: 2px solid #dc2626;
 }
 
 .avatar {
-  width: 60px;
-  height: 60px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   object-fit: cover;
+  border: 2px solid var(--primary, #3b82f6);
 }
 
-.request-body h4 {
-  margin: 0 0 0.25rem;
-  font-size: 1rem;
-  font-weight: 600;
+.body {
+  flex: 1;
 }
 
-.request-body p {
-  margin: 0;
-  color: #555;
-  font-size: 0.9rem;
-}
-
-.actions {
-  margin-left: auto;
+.buttons-row {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  gap: 1.2rem;
+  margin: 1rem 0 0.5rem 0;
 }
 
-.actions button {
-  padding: 0.4rem 0.8rem;
+.accept-btn {
+  background: #16a34a;
+  color: #fff;
   border: none;
-  border-radius: 6px;
-  cursor: pointer;
+  border-radius: 8px;
+  padding: 0.5rem 1.2rem;
   font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
 }
 
-.actions button:first-child {
-  background: #16a34a; /* green */
-  color: #fff;
+.accept-btn:hover {
+  background: #15803d;
 }
 
-.actions button:last-child {
-  background: #dc2626; /* red */
+.decline-btn {
+  background: #dc2626;
   color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+.decline-btn:hover {
+  background: #b91c1c;
 }
 
 .status {
-  margin-left: auto;
+  display: inline-block;
   font-weight: 700;
-  padding: 0.2rem 0.6rem;
+  padding: 0.2rem 0.7rem;
   border-radius: 6px;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
   text-transform: uppercase;
 }
 
 .status.accepted {
   background: #16a34a;
-  color: var(--card);
+  color: #fff;
 }
 
 .status.declined {
   background: #dc2626;
-  color: var(--card);
+  color: #fff;
 }
 
 .status.na {
   background: #d1fae5;
   color: var(--text);
+}
+
+.accepted-popup {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #16a34a;
+  color: #fff;
+  padding: 1.2rem 2.5rem;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  z-index: 2000;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  animation: fadeInOut 2s;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.card-actions-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.kebab-menu-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.kebab-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: var(--card-inverse-text);
+  padding: 0.2rem 0.5rem;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.kebab-btn:hover {
+  background: rgba(0,0,0,0.07);
+}
+
+.kebab-dots {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.kebab-dropdown {
+  position: absolute;
+  right: 0;
+  top: 2.2rem;
+  background: var(--card-inverse);
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  z-index: 10;
+  min-width: 140px;
+  padding: 0.3rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.kebab-dropdown button {
+  background: none;
+  border: none;
+  color: var(--card-inverse-text);
+  text-align: left;
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.kebab-dropdown button:hover {
+  background: var(--primary, #e0f2ff);
+  color: var(--primary-hover, #0077cc);
 }
