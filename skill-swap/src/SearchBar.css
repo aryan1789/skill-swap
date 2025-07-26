@@ -1,5 +1,10 @@
 /* SearchBar.css */
 
+body, .search-bar {
+  background: var(--bg);
+  color: var(--text);
+}
+
 .search-bar {
   display: flex;
   align-items: center;
@@ -8,6 +13,8 @@
   margin-bottom: 20px;
   width: 100%;
   position: relative;
+  background: var(--card);
+  color: var(--text);
 }
 
 /* Search Input */
@@ -22,7 +29,7 @@
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: #6b7280;
+  color: var(--primary, #3b82f6);
   font-size: 16px;
   z-index: 1;
 }
@@ -33,15 +40,15 @@
   border: 2px solid #e5e7eb;
   border-radius: 8px;
   font-size: 16px;
-  background-color: white;
+  background-color: var(--card);
   transition: all 0.2s ease;
-  color: black;
+  color: var(--text);
   font-family: 'Inter', sans-serif;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--primary, #3b82f6);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -78,7 +85,7 @@
 }
 
 .filter-btn {
-  background: white;
+  background: var(--card);
   border: 2px solid #e5e7eb;
   border-radius: 8px;
   padding: 12px;
@@ -98,7 +105,7 @@
 
 .filter-btn:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--primary, #3b82f6);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -107,7 +114,7 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: white;
+  background: var(--card);
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -123,6 +130,7 @@
   color: #374151;
   font-size: 14px;
   font-family: 'Inter', sans-serif;
+  background: var(--card);
 }
 
 .filter-option:hover {
@@ -131,7 +139,7 @@
 
 .filter-option.active {
   background-color: #3b82f6;
-  color: white;
+  color: var(--card);
 }
 
 .filter-option:first-child {
@@ -146,7 +154,7 @@
 
 /* Sort Button */
 .sort-btn {
-  background: white;
+  background: var(--card);
   border: 2px solid #e5e7eb;
   border-radius: 8px;
   padding: 12px;
@@ -166,7 +174,7 @@
 
 .sort-btn:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--primary, #3b82f6);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 

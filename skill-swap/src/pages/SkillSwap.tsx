@@ -235,8 +235,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     minHeight: "300px",
   },
   card: {
-    background: "#fff",
-    color: "#111827",
+    background: "var(--card-inverse)",
+    color: "var(--card-inverse-text)",
     padding: "1.5rem",
     borderRadius: "12px",
     boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
@@ -245,8 +245,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   skillList: { display: "flex", flexWrap: "wrap", gap: "0.5rem" },
   skillBadge: {
-    background: "#e0f2ff",
-    color: "#0077cc",
+    background: "var(--primary, #e0f2ff)",
+    color: "var(--bg, #0077cc)",
     padding: "0.3rem 0.6rem",
     borderRadius: "20px",
     fontSize: "0.8rem",

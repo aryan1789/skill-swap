@@ -1,5 +1,10 @@
 /* SwapRequests.css – minimal styling for swap‑requests page */
 
+body, .swap-requests-page {
+  background: var(--bg);
+  color: var(--text);
+}
+
 .swap-requests-page {
   max-width: 800px;
   margin: 0 auto;
@@ -21,11 +26,12 @@
   display: flex;
   align-items: flex-start;
   gap: 1rem;
-  background: #ffffff;
+  background: var(--card-inverse);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   padding: 1rem;
   margin-bottom: 1rem;
+  color: var(--card-inverse-text);
 }
 
 .request-card.outgoing {
@@ -86,11 +92,16 @@
 }
 
 .status.accepted {
-  background: #d1fae5;
-  color: #065f46;
+  background: #16a34a;
+  color: var(--card);
 }
 
 .status.declined {
-  background: #fee2e2;
-  color: #991b1b;
+  background: #dc2626;
+  color: var(--card);
+}
+
+.status.na {
+  background: #d1fae5;
+  color: var(--text);
 }

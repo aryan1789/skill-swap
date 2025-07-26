@@ -4,7 +4,8 @@ import {
   getSkillSwapsForUser,
   updateSwapStatus,
 } from "../api/skillSwapService";
-import { useAuth } from "../store/hooks";
+import { useAuth } from
+ "../store/hooks";
 import "../SwapRequests.css";
 
 interface SwapRequest {

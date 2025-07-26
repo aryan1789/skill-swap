@@ -1,7 +1,8 @@
 import React,{useEffect,useState,useRef} from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth, useAppDispatch, useUserData } from "../store/hooks";
+import { useAuth, useAppDispatch, useUserData, useAppSelector } from "../store/hooks";
 import { logout } from "../store/userSlice";
+import ThemeToggle from "./ThemeToggle";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
@@ -13,6 +14,7 @@ const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
   const { isLoggedIn, currentUser } = useAuth();
   const { supabaseUid } = useUserData();
+  const mode = useAppSelector((state) => state.theme.mode);
   
   console.log("Navbar - Auth state:", { isLoggedIn, currentUser, supabaseUid });
 
@@ -39,7 +41,11 @@ const Navbar: React.FC = () => {
   };
 }, []);
   return (
-    <nav style={styles.navbar}>
+    <nav style={{
+      ...styles.navbar,
+      backgroundColor: mode === "dark" ? "#18181b" : "#f9fafb",
+      color: mode === "dark" ? "#f3f4f6" : "#111827"
+    }}>
       <div style={styles.title}>SkillSwap 🚀</div>
       <div style={styles.links}>
         {isLoggedIn ? (
@@ -69,6 +75,9 @@ const Navbar: React.FC = () => {
   </>
 )}
       </div>
+      <div style={{ marginLeft: "auto", marginRight: "1rem" }}>
+        <ThemeToggle />
+      </div>
     </nav>
   );
 };
@@ -86,8 +95,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     left: 0,
     right: 0,
     height: "60px",
-    backgroundColor: "#1e1e1e",
-    color: "white",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -104,15 +111,17 @@ const styles: { [key: string]: React.CSSProperties } = {
     gap: "1.5rem",
   },
   link: {
-    color: "white",
+    color: "var(--text)",
     textDecoration: "none",
     fontWeight: 500,
     opacity: 0.7,
+    transition: "color 0.2s, opacity 0.2s",
   },
   activeLink: {
     opacity: 1,
-    borderBottom: "2px solid white",
+    borderBottom: "2px solid var(--primary)",
     paddingBottom: "2px",
+    color: "var(--primary)",
   },
   dropdownMenu: {
   position: "absolute",

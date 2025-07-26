@@ -45,11 +45,11 @@ const formattedDate = joinedDate.toLocaleDateString("en-NZ", {
 const styles: { [key: string]: React.CSSProperties } = {
 
      card: {
-        background: "#fff",
+        background: "var(--card-inverse)",
         padding: "1.5rem",
         borderRadius: "12px",
         boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-        color: "black",
+        color: "var(--card-inverse-text)",
         maxWidth: "400px",
     },
     skillList: {
@@ -60,8 +60,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     skillBadge: {
         margin: "0 auto",
-        background: "#e0f2ff",
-        color: "#0077cc",
+        background: "var(--primary, #e0f2ff)",
+        color: "var(--bg, #0077cc)",
         padding: "0.3rem 0.6rem",
         borderRadius: "20px",
         fontSize: "0.8rem",

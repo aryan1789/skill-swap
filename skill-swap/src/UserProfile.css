@@ -2,14 +2,14 @@
 
 
 .profile-card {
-    background: white;
+    background: var(--card-inverse);
     padding: 40px;
     border-radius: 16px;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     width: 100%;
     max-width: 400px;
     animation: slideUp 0.5s ease-out;
-    color:black;
+    color: var(--card-inverse-text);
 }
 
 
@@ -30,9 +30,9 @@
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 16px;
-  background-color: white;
+  background-color: var(--card-inverse);
   transition: border-color 0.2s;
-  color: black;
+  color: var(--card-inverse-text);
   font-family: 'Inter', sans-serif;
 }
 
@@ -61,4 +61,52 @@
 
 .save-button:hover {
   background-color: #2563eb;
+}
+
+body, .user-profile-container {
+    background: var(--bg);
+    color: var(--text);
+}
+
+.user-profile-header {
+    color: var(--text);
+}
+
+.user-profile-card {
+  background: var(--card);
+  color: var(--text);
+  transition: border-color 0.2s;
+}
+
+.user-profile-card .profile-label {
+  color: var(--text);
+}
+
+.user-profile-card .profile-value {
+  color: var(--text);
+}
+
+.user-profile-card .profile-bio {
+  color: var(--text);
+}
+
+.user-profile-card .profile-skill {
+  background: var(--primary, #3b82f6);
+  color: var(--card);
+}
+
+.user-profile-card .profile-skill.selected {
+  background: var(--primary-hover, #2563eb);
+  color: var(--card);
+}
+
+.user-profile-card .profile-action {
+  background: var(--primary, #3b82f6);
+  color: var(--card);
+  transition: background-color 0.2s ease;
+}
+
+.user-profile-card .profile-action:hover {
+  background: var(--primary-hover, #2563eb);
+  color: var(--card);
 }
