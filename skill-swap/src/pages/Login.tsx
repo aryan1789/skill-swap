@@ -52,8 +52,26 @@ const Login: React.FC = () => {
                 navigate("/profile");
             } else {
                 const errorData = await response.json();
-                // Dispatch Redux action for failed login
-                dispatch(loginFailure(errorData.error || "Invalid email or password. Please try again."));
+                console.log("Login error response:", errorData); // Debug log
+                
+                let errorMessage = "Invalid email or password. Please try again.";
+                
+                // Check if errorData.error is a JSON string that needs parsing
+                if (errorData.error) {
+                    try {
+                        const parsedError = JSON.parse(errorData.error);
+                        errorMessage = parsedError.msg || parsedError.message || errorMessage;
+                    } catch {
+                        // If parsing fails, use the error string directly
+                        errorMessage = errorData.error;
+                    }
+                } else {
+                    // Check for direct properties
+                    errorMessage = errorData.msg || errorData.message || errorMessage;
+                }
+                
+                console.log("Parsed error message:", errorMessage); // Debug log
+                dispatch(loginFailure(errorMessage));
             }
         } catch (err) {
             // Dispatch Redux action for network error
@@ -153,7 +171,6 @@ const Login: React.FC = () => {
 
                 <div className="login-footer">
                     <p>Don't have an account? <a href="/register">Sign up here</a></p>
-                    <p><a href="/forgot-password">Forgot your password?</a></p>
                 </div>
             </div>
         </div>

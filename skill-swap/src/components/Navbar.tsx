@@ -14,6 +14,7 @@ const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
   const { isLoggedIn, currentUser } = useAuth();
   const { supabaseUid } = useUserData();
+  const hasUnreadMessages = useAppSelector((state) => state.user.hasUnreadMessages);
   const mode = useAppSelector((state) => state.theme.mode);
   
   console.log("Navbar - Auth state:", { isLoggedIn, currentUser, supabaseUid });
@@ -52,6 +53,8 @@ const Navbar: React.FC = () => {
           <>
         <NavLink to="/" current={location.pathname === "/"} label="Home" />
         <NavLink to="/skillswap" current={location.pathname === "/skillswap"} label="SkillSwap" />
+        <NavLink to="/swap-requests" current={location.pathname === "/swap-requests"} label="Requests" />
+        <ChatNavLink to="/chat" current={location.pathname === "/chat"} label="Chat" hasNotification={hasUnreadMessages} />
         <NavLink to="/profile" current={location.pathname === "/profile"} label="Profile" />
         
   <div style={{ position: "relative" }} ref={dropdownRef}>
@@ -85,6 +88,20 @@ const Navbar: React.FC = () => {
 const NavLink = ({ to, label, current }: { to: string; label: string; current: boolean }) => (
   <Link to={to} style={{ ...styles.link, ...(current ? styles.activeLink : {}) }}>
     {label}
+  </Link>
+);
+
+const ChatNavLink = ({ to, label, current, hasNotification }: { 
+  to: string; 
+  label: string; 
+  current: boolean; 
+  hasNotification: boolean;
+}) => (
+  <Link to={to} style={{ ...styles.link, ...(current ? styles.activeLink : {}), position: "relative" }}>
+    {label}
+    {hasNotification && (
+      <div style={styles.notificationBubble}></div>
+    )}
   </Link>
 );
 
@@ -144,6 +161,17 @@ dropdownItem: {
   cursor: "pointer",
   fontSize: "0.9rem",
   borderBottom: "1px solid #3a3a3a",
+},
+
+notificationBubble: {
+  position: "absolute",
+  top: "-2px",
+  right: "-6px",
+  width: "8px",
+  height: "8px",
+  backgroundColor: "#ff4757",
+  borderRadius: "50%",
+  border: "1px solid white",
 },
 
 };

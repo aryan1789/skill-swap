@@ -173,6 +173,7 @@ const SkillSwap: React.FC = () => {
                   <div style={styles.buttonRow}>
                     <button style={styles.button} onClick={() => (window.location.href = `/viewprofile?id=${user.supabaseUserId}`)}>View Profile</button>
                     <button style={styles.swapButton} onClick={() => handleSkillSwap(user)} disabled={isSending}>{isSending ? "Sending…" : "Swap Skills"}</button>
+                    <button style={styles.chatButton} onClick={() => (window.location.href = `/chat`)}>💬 Chat</button>
                   </div>
                 </div>
               ))}
@@ -204,6 +205,7 @@ const SkillSwap: React.FC = () => {
               <div style={styles.buttonRow}>
                 <button style={styles.button} onClick={() => (window.location.href = `/viewprofile?id=${user.supabaseUserId}`)}>View Profile</button>
                 <button style={styles.swapButton} onClick={() => handleSkillSwap(user)} disabled={isSending}>{isSending ? "Sending…" : "Swap Skills"}</button>
+                <button style={styles.chatButton} onClick={() => (window.location.href = `/chat`)}>💬 Chat</button>
               </div>
             </div>
           ))}
@@ -277,6 +279,17 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: "6px",
     cursor: "pointer",
     fontWeight: 600,
+  },
+  chatButton: {
+    flex: 0.7,
+    backgroundColor: "#28a745",
+    color: "white",
+    border: "none",
+    padding: "0.5rem",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontWeight: 600,
+    fontSize: "0.9rem",
   },
 };
 

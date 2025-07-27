@@ -10,6 +10,7 @@ interface UserState {
   token: string | null;
   supabaseUid: string | null;
   userGuid: string | null;
+  hasUnreadMessages: boolean;  // New: track if user has unread messages
 }
 
 // Function to load initial state from localStorage (Redux's "memory backup")
@@ -32,6 +33,7 @@ const loadInitialState = (): UserState => {
         token,
         supabaseUid,
         userGuid,
+        hasUnreadMessages: false, // Default to false, can be updated later
       };
     }
   } catch (error) {
@@ -43,11 +45,12 @@ const loadInitialState = (): UserState => {
   return {
     currentUser: null,
     isLoggedIn: false,
-    loading: false,
+    loading: true, // Start with loading true, will be set to false after auth check
     error: null,
     token: null,
     supabaseUid: null,
     userGuid: null,
+    hasUnreadMessages: false, // Default to false
   };
 };
 
@@ -133,6 +136,21 @@ const userSlice = createSlice({
     // Action: Clear error
     clearError: (state) => {
       state.error = null;
+    },
+
+    // Action: Mark messages as read
+    markMessagesAsRead: (state) => {
+      state.hasUnreadMessages = false;
+    },
+
+    // Action: New message received
+    newMessageReceived: (state) => {
+      state.hasUnreadMessages = true;
+    },
+
+    // Action: Complete initial auth check
+    completeAuthCheck: (state) => {
+      state.loading = false;
     }
   }
 });
@@ -144,7 +162,10 @@ export const {
   loginFailure,
   logout,
   updateUserProfile,
-  clearError
+  clearError,
+  markMessagesAsRead,
+  newMessageReceived,
+  completeAuthCheck
 } = userSlice.actions;
 
 // Export the reducer to be used in store

@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://localhost:7139/api";
+const API_BASE_URL = "http://localhost:5209/api";
 
 export interface ChatMessage {
   id: string;

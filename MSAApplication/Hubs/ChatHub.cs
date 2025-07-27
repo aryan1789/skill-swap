@@ -91,8 +91,7 @@ namespace MSAApplication.Hubs
                 // Get sender information for the message
                 var sender = await _context.Users.FindAsync(senderGuid);
 
-                // Send message to all users in this chat
-                await Clients.Group($"chat_{skillSwapRequestId}").SendAsync("ReceiveMessage", new
+                var messageData = new
                 {
                     id = chatMessage.Id,
                     skillSwapRequestId = chatMessage.SkillSwapRequestId,
@@ -101,7 +100,13 @@ namespace MSAApplication.Hubs
                     content = chatMessage.MessageContent,
                     sentAt = chatMessage.SentAt,
                     isRead = chatMessage.IsRead
-                });
+                };
+
+                // Send message to all users in this chat EXCEPT the sender
+                await Clients.GroupExcept($"chat_{skillSwapRequestId}", Context.ConnectionId).SendAsync("ReceiveMessage", messageData);
+                
+                // Send confirmation to sender
+                await Clients.Caller.SendAsync("ReceiveMessage", messageData);
             }
             catch (Exception ex)
             {
