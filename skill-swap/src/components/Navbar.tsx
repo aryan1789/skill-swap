@@ -12,7 +12,6 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
   
-  // Redux state - this automatically updates when login/logout happens!
   const dispatch = useAppDispatch();
   const { isLoggedIn, currentUser } = useAuth();
   const { supabaseUid } = useUserData();
@@ -20,9 +19,7 @@ const Navbar: React.FC = () => {
   const mode = useAppSelector((state) => state.theme.mode);
 
   const handleLogout = () => {
-    // Dispatch Redux logout action (handles localStorage internally)
     dispatch(logout());
-    
     setIsDropdownOpen(false);
     setIsMobileMenuOpen(false);
     navigate("/login");

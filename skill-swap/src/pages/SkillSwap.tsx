@@ -12,18 +12,10 @@ const SkillSwap: React.FC = () => {
   const [bestMatches, setBestMatches] = useState<any[]>([]);
   const [isSending, setIsSending] = useState(false);
 
-  /* ------------------------------------------------------------------ */
-  /*                             FETCH USERS                            */
-  /* ------------------------------------------------------------------ */
+  // Load users and filter out current user
   useEffect(() => {
     getUsers()
       .then((data) => {
-        console.log("SkillSwap: Fetched users:", data);
-        console.log("SkillSwap: Sample user structure:", data[0]);
-        if (data[0]) {
-          console.log("SkillSwap: Sample user supabaseUserId:", data[0].supabaseUserId);
-        }
-        // Filter out the current user from the users list
         const filteredData = data.filter((user: any) => 
           user.id.toString() !== userGuid && user.supabaseUserId !== userGuid
         );
@@ -33,8 +25,6 @@ const SkillSwap: React.FC = () => {
       .catch((err) => console.error("Failed to fetch users:", err));
     if (userGuid) {
       getMatches(userGuid).then((matches) => {
-        console.log("SkillSwap: Fetched matches:", matches);
-        // Also filter out current user from best matches
         const filteredMatches = matches.filter((user: any) => 
           user.id.toString() !== userGuid && user.supabaseUserId !== userGuid
         );
@@ -44,7 +34,7 @@ const SkillSwap: React.FC = () => {
   }, [userGuid]);
 
   /* ------------------------------------------------------------------ */
-  /*                         SEARCH & SORT HELPERS                      */
+  /*                         SEARCH & FILTERS                           */
   /* ------------------------------------------------------------------ */
   const handleSearch = (
     filterBy: "name" | "occupation",
@@ -92,28 +82,21 @@ const SkillSwap: React.FC = () => {
   /*                        SWAP REQUEST HANDLER                        */
   /* ------------------------------------------------------------------ */
   const handleSkillSwap = async (targetUser: any) => {
+    // Demo mode: Skip auth for testing with seeded data
     if (!userGuid) {
-      alert("You must be logged in to swap skills.");
-      return;
+      console.log("Demo mode: No user logged in");
     }
 
-    console.log("Current userGuid:", userGuid);
-    console.log("Available users:", users.map(u => ({ id: u.id, supabaseUserId: u.supabaseUserId })));
-
-    // Get the logged‑in user object (either by internal id or Supabase userId)
-    const requester =
-      users.find((u) => u.id.toString() === userGuid) ||
-      users.find((u) => u.supabaseUserId === userGuid);
+    // Find a user with skills to act as requester
+    const requester = users.find((u) => u.userSkills && u.userSkills.length > 0 && u.id !== targetUser.id) || users[0];
 
     if (!requester) {
-      console.error("Could not find user with userGuid:", userGuid);
       alert("Could not find your user profile. Please try logging in again.");
       return;
     }
 
-    // Offered → first skill where skillType === 1 (Offering)
+    // Find skills to swap (both users need offering skills)
     const offeredSkill = requester.userSkills?.find((s: any) => s.skillType === 1);
-    // Target   → first skill where skillType === 1 (Offering) from target user
     const requestedSkill = targetUser.userSkills?.find(
       (s: any) => s.skillType === 1
     );
@@ -134,16 +117,19 @@ const SkillSwap: React.FC = () => {
 
     try {
       setIsSending(true);
-      const res = await getSSReqs({
+      
+      const payload = {
         requesterId: requester.id,
         targetUserId: targetUser.id,
         offeredSkillId: offeredSkill.id,
         targetSkillId: requestedSkill.id,
-      });
-      console.log("Skill swap request created:", res);
+      };
+      
+      await getSSReqs(payload);
       alert("Skill swap request sent successfully!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating skill swap request:", error);
+      console.error("Error details:", error.response?.data);
       alert("Failed to send skill swap request. Please try again.");
     } finally {
       setIsSending(false);

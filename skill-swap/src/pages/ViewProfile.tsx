@@ -10,31 +10,24 @@ const ViewProfile: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    console.log('ViewProfile: Current URL:', window.location.href);
-    console.log('ViewProfile: All search params:', searchParams.toString());
-    console.log('ViewProfile: userId from URL params:', userId);
-    console.log('ViewProfile: userId type:', typeof userId);
-
     useEffect(() => {
         if (!userId || userId === 'undefined' || userId === 'null') {
-            console.error('ViewProfile: Invalid user ID provided in URL:', userId);
             setError(`Invalid user ID: ${userId}`);
             setLoading(false);
             return;
         }
 
-        console.log("ViewProfile: Loading user profile for ID:", userId);
+        console.log("Loading user profile for ID:", userId);
         setLoading(true);
         setError(null);
         
         getUserBySupabaseId(userId)
             .then((data) => {
-                console.log("ViewProfile: User profile loaded:", data);
                 setUser(data);
                 setLoading(false);
             })
             .catch((err) => {
-                console.error("ViewProfile: Failed to load user:", err);
+                console.error("Failed to load user:", err);
                 setError("Failed to load user profile. Please try again.");
                 setLoading(false);
             });

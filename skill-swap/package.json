@@ -1,10 +1,13 @@
 {
+  "homepage": "https://aryan1789.github.io/skill-swap",
   "name": "skill-swap",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "start": "react-scripts start",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",

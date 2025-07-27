@@ -10,12 +10,11 @@ import { updateUserProfile as updateReduxProfile } from "../store/userSlice";
 import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 
 const UserProfile: React.FC = () => {
-  // Redux hooks - get user data from store instead of API call!
   const dispatch = useAppDispatch();
   const { currentUser, isLoggedIn } = useAuth();
   const navigate = useNavigate();
   
-  // Form state (these stay local as they're temporary form values)
+  // Form state
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
   const [email, setEmail] = useState("");
@@ -25,7 +24,7 @@ const UserProfile: React.FC = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   
-  // Skills management state
+  // Skills management
   const [availableSkills, setAvailableSkills] = useState<any[]>([]);
   const [selectedOfferingSkills, setSelectedOfferingSkills] = useState<number[]>([]);
   const [selectedSeekingSkills, setSelectedSeekingSkills] = useState<number[]>([]);

@@ -19,14 +19,21 @@ namespace MSAApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSkillSwapRequest([FromBody] SkillSwapRequest skillSwapRequest)
         {
+            Console.WriteLine("=== SKILL SWAP REQUEST DEBUG ===");
+            Console.WriteLine($"Received payload: RequesterId={skillSwapRequest.RequesterId}, TargetUserId={skillSwapRequest.TargetUserId}, OfferedSkillId={skillSwapRequest.OfferedSkillId}, TargetSkillId={skillSwapRequest.TargetSkillId}");
+            Console.WriteLine("=================================");
+
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             if (skillSwapRequest.OfferedSkillId == 0 || skillSwapRequest.TargetSkillId == 0)
                 return BadRequest("Both offered and requested skill IDs must be provided.");
 
-            // ⬇️ NEW: verify each ID really exists in UserSkills
+            // Verify skill IDs exist in database
             var offeredOk = await _context.UserSkills.AnyAsync(u => u.Id == skillSwapRequest.OfferedSkillId);
             var targetOk = await _context.UserSkills.AnyAsync(u => u.Id == skillSwapRequest.TargetSkillId);
+            
+            Console.WriteLine($"Skill validation: OfferedSkillId {skillSwapRequest.OfferedSkillId} exists: {offeredOk}, TargetSkillId {skillSwapRequest.TargetSkillId} exists: {targetOk}");
+            
             if (!offeredOk || !targetOk)
                 return BadRequest("OfferedSkillId or TargetSkillId is invalid.");
 
