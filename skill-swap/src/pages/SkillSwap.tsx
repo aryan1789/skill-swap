@@ -3,6 +3,7 @@ import { getUsers, getMatches } from "../api/userService";
 import SearchBar from "../components/SearchBar";
 import { getSSReqs } from "../api/skillSwapService"; // renamed helper
 import { useAppSelector } from "../store/hooks";
+import "./SkillSwap.css";
 
 const SkillSwap: React.FC = () => {
   const userGuid = useAppSelector((state) => state.user.userGuid);
@@ -17,14 +18,27 @@ const SkillSwap: React.FC = () => {
   useEffect(() => {
     getUsers()
       .then((data) => {
-        console.log("Fetched users:", data);
-        setUsers(data);
-        setFilteredUsers(data);
+        console.log("SkillSwap: Fetched users:", data);
+        console.log("SkillSwap: Sample user structure:", data[0]);
+        if (data[0]) {
+          console.log("SkillSwap: Sample user supabaseUserId:", data[0].supabaseUserId);
+        }
+        // Filter out the current user from the users list
+        const filteredData = data.filter((user: any) => 
+          user.id.toString() !== userGuid && user.supabaseUserId !== userGuid
+        );
+        setUsers(filteredData);
+        setFilteredUsers(filteredData);
       })
       .catch((err) => console.error("Failed to fetch users:", err));
     if (userGuid) {
       getMatches(userGuid).then((matches) => {
-        setBestMatches(matches);
+        console.log("SkillSwap: Fetched matches:", matches);
+        // Also filter out current user from best matches
+        const filteredMatches = matches.filter((user: any) => 
+          user.id.toString() !== userGuid && user.supabaseUserId !== userGuid
+        );
+        setBestMatches(filteredMatches);
       });
     }
   }, [userGuid]);
@@ -78,18 +92,21 @@ const SkillSwap: React.FC = () => {
   /*                        SWAP REQUEST HANDLER                        */
   /* ------------------------------------------------------------------ */
   const handleSkillSwap = async (targetUser: any) => {
-    const requesterId = localStorage.getItem("userGuid");
-    if (!requesterId) {
+    if (!userGuid) {
       alert("You must be logged in to swap skills.");
       return;
     }
 
+    console.log("Current userGuid:", userGuid);
+    console.log("Available users:", users.map(u => ({ id: u.id, supabaseUserId: u.supabaseUserId })));
+
     // Get the logged‑in user object (either by internal id or Supabase userId)
     const requester =
-      users.find((u) => u.id.toString() === requesterId) ||
-      users.find((u) => u.supabaseUserId === requesterId);
+      users.find((u) => u.id.toString() === userGuid) ||
+      users.find((u) => u.supabaseUserId === userGuid);
 
     if (!requester) {
+      console.error("Could not find user with userGuid:", userGuid);
       alert("Could not find your user profile. Please try logging in again.");
       return;
     }
@@ -121,14 +138,13 @@ const SkillSwap: React.FC = () => {
         requesterId: requester.id,
         targetUserId: targetUser.id,
         offeredSkillId: offeredSkill.id,
-        targetSkillId: requestedSkill.id, // 🔑 the correct property name
+        targetSkillId: requestedSkill.id,
       });
-
-      console.log("Swap request sent:", res);
-      alert(`Swap request sent to ${targetUser.name}!`);
-    } catch (err) {
-      console.error("Error sending swap request:", err);
-      alert("Failed to send swap request. Please try again.");
+      console.log("Skill swap request created:", res);
+      alert("Skill swap request sent successfully!");
+    } catch (error) {
+      console.error("Error creating skill swap request:", error);
+      alert("Failed to send skill swap request. Please try again.");
     } finally {
       setIsSending(false);
     }
@@ -138,8 +154,8 @@ const SkillSwap: React.FC = () => {
   /*                               RENDER                               */
   /* ------------------------------------------------------------------ */
   return (
-    <div style={styles.container}>
-      <h2>SkillSwap</h2>
+    <div className="skillswap-page" style={styles.container}>
+      <h2 className="page-title">SkillSwap</h2>
       <div style={styles.searchWrapper}>
         <SearchBar
           onSearch={handleSearch}
@@ -153,10 +169,10 @@ const SkillSwap: React.FC = () => {
         {bestMatches.length > 0 ? (
           <div style={{ marginBottom: "2rem" }}>
             <h3>Best Matches</h3>
-            <div style={styles.cardGrid}>
+            <div className="user-grid" style={styles.cardGrid}>
               {bestMatches.map((user) => (
-                <div key={user.id} style={{ ...styles.card, border: "2px solid #3b82f6" }}>
-                  <span style={{ background: "#3b82f6", color: "#fff", borderRadius: "8px", padding: "0.2rem 0.7rem", fontWeight: 700, fontSize: "0.85rem", position: "absolute", marginTop: "-1.2rem", marginLeft: "-1.2rem" }}>Good Match</span>
+                <div key={user.id} className="user-card" style={{ ...styles.card, border: "2px solid #3b82f6" }}>
+                  <span style={{ background: "var(--primary)", color: "white", borderRadius: "8px", padding: "0.2rem 0.7rem", fontWeight: 700, fontSize: "0.85rem", position: "absolute", marginTop: "-1.2rem", marginLeft: "-1.2rem" }}>Good Match</span>
                   <img
                     src={user.profilePictureUrl || "Default_pfp.jpg"}
                     alt={`${user.name}'s profile`}
@@ -171,9 +187,13 @@ const SkillSwap: React.FC = () => {
                     ))}
                   </div>
                   <div style={styles.buttonRow}>
-                    <button style={styles.button} onClick={() => (window.location.href = `/viewprofile?id=${user.supabaseUserId}`)}>View Profile</button>
+                    {user.supabaseUserId && (
+                        <button style={styles.button} onClick={() => (window.location.href = `/viewprofile?id=${user.supabaseUserId}`)}>View Profile</button>
+                    )}
+                    {!user.supabaseUserId && (
+                        <button style={{ ...styles.button, opacity: 0.5, cursor: 'not-allowed' }} disabled>Profile Unavailable</button>
+                    )}
                     <button style={styles.swapButton} onClick={() => handleSkillSwap(user)} disabled={isSending}>{isSending ? "Sending…" : "Swap Skills"}</button>
-                    <button style={styles.chatButton} onClick={() => (window.location.href = `/chat`)}>💬 Chat</button>
                   </div>
                 </div>
               ))}
@@ -186,9 +206,9 @@ const SkillSwap: React.FC = () => {
           </div>
         )}
         {/* All Users Section (excluding best matches) */}
-        <div style={styles.cardGrid}>
+        <div className="user-grid" style={styles.cardGrid}>
           {filteredUsers.filter(u => !bestMatches.some(m => m.id === u.id)).map((user) => (
-            <div key={user.id} style={styles.card}>
+            <div key={user.id} className="user-card" style={styles.card}>
               <img
                 src={user.profilePicture || "Default_pfp.jpg"}
                 alt={`${user.name}'s profile`}
@@ -203,9 +223,13 @@ const SkillSwap: React.FC = () => {
                 ))}
               </div>
               <div style={styles.buttonRow}>
-                <button style={styles.button} onClick={() => (window.location.href = `/viewprofile?id=${user.supabaseUserId}`)}>View Profile</button>
+                {user.supabaseUserId && (
+                    <button style={styles.button} onClick={() => (window.location.href = `/viewprofile?id=${user.supabaseUserId}`)}>View Profile</button>
+                )}
+                {!user.supabaseUserId && (
+                    <button style={{ ...styles.button, opacity: 0.5, cursor: 'not-allowed' }} disabled>Profile Unavailable</button>
+                )}
                 <button style={styles.swapButton} onClick={() => handleSkillSwap(user)} disabled={isSending}>{isSending ? "Sending…" : "Swap Skills"}</button>
-                <button style={styles.chatButton} onClick={() => (window.location.href = `/chat`)}>💬 Chat</button>
               </div>
             </div>
           ))}
@@ -258,34 +282,25 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginTop: "1rem",
     display: "flex",
     justifyContent: "space-between",
-    gap: "0.5rem",
+    gap: "0.75rem",
   },
   button: {
     flex: 1,
-    backgroundColor: "#4a4949",
+    backgroundColor: "var(--card)",
     color: "white",
     border: "none",
-    padding: "0.5rem",
+    padding: "0.75rem 1rem",
     borderRadius: "6px",
     cursor: "pointer",
     fontWeight: 600,
+    fontSize: "0.9rem",
   },
   swapButton: {
     flex: 1,
-    backgroundColor: "#0077cc",
+    backgroundColor: "var(--primary)",
     color: "white",
     border: "none",
-    padding: "0.5rem",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontWeight: 600,
-  },
-  chatButton: {
-    flex: 0.7,
-    backgroundColor: "#28a745",
-    color: "white",
-    border: "none",
-    padding: "0.5rem",
+    padding: "0.75rem 1rem",
     borderRadius: "6px",
     cursor: "pointer",
     fontWeight: 600,

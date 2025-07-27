@@ -1,0 +1,128 @@
+/* Navbar.css - Mobile Responsiveness with Hamburger Menu */
+
+/* Mobile styles for Navbar */
+@media screen and (max-width: 768px) {
+  .navbar-container {
+    padding: 0 1rem !important;
+    padding-left: max(1rem, env(safe-area-inset-left)) !important;
+    padding-right: max(1rem, env(safe-area-inset-right)) !important;
+    height: 50px !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  .navbar-title {
+    font-size: 1.1rem !important;
+    flex-shrink: 0;
+    margin-right: auto !important;
+  }
+  
+  /* Hide desktop navigation on mobile */
+  .desktop-nav {
+    display: none !important;
+  }
+  
+  /* Show mobile menu toggle */
+  .mobile-menu-toggle {
+    display: flex !important;
+    order: 2;
+    margin-left: auto !important;
+    margin-right: 0.5rem !important;
+  }
+  
+  .theme-toggle {
+    order: 3;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    flex-shrink: 0;
+  }
+  
+  .theme-toggle button {
+    padding: 0.4rem 0.6rem !important;
+    font-size: 0.8rem !important;
+  }
+  
+  /* Mobile menu when open */
+  .desktop-nav.mobile-open {
+    display: flex !important;
+    position: fixed !important;
+    top: 50px !important;
+    left: 0 !important;
+    right: 0 !important;
+    left: max(0, env(safe-area-inset-left)) !important;
+    right: max(0, env(safe-area-inset-right)) !important;
+    background: var(--card) !important;
+    flex-direction: column !important;
+    padding: 1rem !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+    border-bottom: 1px solid var(--border) !important;
+    z-index: 999 !important;
+    width: auto !important;
+    margin: 0 !important;
+  }
+  
+  .mobile-open .navbar-link {
+    padding: 0.75rem 1rem !important;
+    border-bottom: 1px solid var(--border) !important;
+    width: 100% !important;
+    text-align: left !important;
+    font-size: 1rem !important;
+    margin: 0 !important;
+  }
+  
+  .mobile-open .profile-avatar {
+    margin: 0.5rem 0 !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .navbar-container {
+    padding: 0 0.5rem !important;
+    padding-left: max(0.5rem, env(safe-area-inset-left)) !important;
+    padding-right: max(0.5rem, env(safe-area-inset-right)) !important;
+    height: 45px !important;
+  }
+  
+  .navbar-title {
+    font-size: 1rem !important;
+  }
+  
+  .theme-toggle button {
+    padding: 0.3rem 0.5rem !important;
+    font-size: 0.75rem !important;
+  }
+  
+  .mobile-menu-toggle {
+    width: 25px !important;
+    height: 25px !important;
+  }
+  
+  .hamburger-line {
+    width: 20px !important;
+    height: 2px !important;
+  }
+}
+
+/* iPhone SE and smaller */
+@media screen and (max-width: 375px) {
+  .navbar-container {
+    padding: 0 0.25rem !important;
+    height: 42px !important;
+  }
+  
+  .navbar-title {
+    font-size: 0.9rem !important;
+  }
+  
+  .mobile-menu-toggle {
+    width: 22px !important;
+    height: 22px !important;
+  }
+  
+  .theme-toggle button {
+    padding: 0.25rem 0.4rem !important;
+    font-size: 0.7rem !important;
+  }
+}

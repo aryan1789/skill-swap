@@ -148,6 +148,17 @@ function RequestCard({ req, type, onStatus }: { req: SwapRequest, type: string, 
             <button className="decline-btn" onClick={() => onStatus(req.id, "Declined")}>Decline</button>
           </div>
         )}
+        {/* Show Chat button for accepted swaps */}
+        {isAccepted && (
+          <div className="buttons-row">
+            <button 
+              className="chat-btn" 
+              onClick={() => window.location.href = `/chat?skillSwapRequestId=${req.id}`}
+            >
+              💬 Start Chat
+            </button>
+          </div>
+        )}
         <span className={`status ${req.status.toLowerCase()}`}>{req.status}</span>
       </div>
     </div>

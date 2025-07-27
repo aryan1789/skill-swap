@@ -22,9 +22,19 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  min-height: -webkit-fill-available; /* iOS Safari */
   background: var(--bg, #ffffff);
   color: var(--text, #000000);
   transition: background 0.2s, color 0.2s;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  -webkit-text-size-adjust: 100%; /* Prevent text scaling on iOS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* iOS Safari viewport fix */
+body.ios {
+  min-height: -webkit-fill-available;
 }
 
 body.theme-light {
@@ -39,7 +49,13 @@ body.theme-dark {
 
 #root {
   min-height: 100vh;
+  min-height: -webkit-fill-available; /* iOS Safari */
   width: 100%;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  max-width: 100vw;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
 h1 {
@@ -71,20 +87,26 @@ button:focus-visible {
 .theme-light {
   --bg: #f9fafb;
   --text: #111827;
+  --text-secondary: #6b7280;
   --card: #fff;
   --primary: #646cff;
   --primary-hover: #535bf2;
   --card-inverse: #23232a;
   --card-inverse-text: #f3f4f6;
+  --border: #e5e7eb;
+  --card-hover: #f3f4f6;
 }
 .theme-dark {
   --bg: #18181b;
   --text: #f3f4f6;
+  --text-secondary: #9ca3af;
   --card: #23232a;
   --primary: #8ab4f8;
   --primary-hover: #3b82f6;
   --card-inverse: #fff;
   --card-inverse-text: #18181b;
+  --border: #374151;
+  --card-hover: #2a2a2f;
 }
 .card, .login-card, .request-card {
   background: var(--card);
@@ -101,5 +123,219 @@ button:focus-visible {
   }
   button {
     background-color: var(--card);
+  }
+}
+
+/* Mobile Responsiveness - Fixed */
+@media screen and (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
+  #root {
+    overflow-x: hidden;
+  }
+  
+  h1 {
+    font-size: 1.8rem !important;
+    line-height: 1.2;
+  }
+  
+  h2 {
+    font-size: 1.4rem !important;
+  }
+  
+  h3 {
+    font-size: 1.2rem !important;
+  }
+  
+  /* Fix button sizing */
+  button {
+    padding: 0.75rem 1rem !important;
+    font-size: 0.9rem !important;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  
+  /* Fix input sizing */
+  input, textarea, select {
+    font-size: 16px !important;
+    padding: 0.75rem !important;
+    min-height: 44px;
+    box-sizing: border-box;
+  }
+  
+  /* Fix container widths */
+  .user-profile-container,
+  .swap-requests-page,
+  .skillswap-container {
+    padding: 60px 0.5rem 1rem 0.5rem !important;
+    max-width: 100% !important;
+    overflow-x: hidden;
+  }
+}
+
+/* General Mobile Improvements */
+@media (max-width: 768px) {
+  /* Ensure touch targets are at least 44px */
+  button, .button, input[type="submit"], input[type="button"] {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  
+  /* Prevent zoom on input focus for iOS */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+  
+  /* Better mobile scrolling */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Reduce margins/padding for mobile */
+  .container, .page-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-width: 768px) and (orientation: landscape) {
+  .navbar-container {
+    height: 40px !important;
+  }
+  
+  .page-container {
+    padding-top: 50px !important;
+  }
+}
+
+/* Small Mobile Devices - Fixed */
+@media screen and (max-width: 480px) {
+  body {
+    font-size: 13px !important;
+  }
+  
+  h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  h2 {
+    font-size: 1.2rem !important;
+  }
+  
+  button {
+    padding: 0.6rem 0.8rem !important;
+    font-size: 0.85rem !important;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Fix all containers for very small screens */
+  .user-profile-container,
+  .swap-requests-page,
+  .skillswap-container {
+    padding: 50px 0.25rem 0.5rem 0.25rem !important;
+    margin: 0 !important;
+  }
+  
+  /* Fix card layouts */
+  .profile-card,
+  .request-card,
+  .user-card {
+    margin: 0.5rem 0 !important;
+    padding: 0.75rem !important;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+}
+
+/* iPhone and iOS specific styles */
+@media screen and (max-width: 768px) {
+  /* Prevent horizontal scrolling globally */
+  * {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* Center content on mobile devices */
+  .page-container,
+  .container,
+  .main-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    margin: 0 auto !important;
+    padding-left: max(0.5rem, env(safe-area-inset-left)) !important;
+    padding-right: max(0.5rem, env(safe-area-inset-right)) !important;
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom)) !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Center all major page layouts */
+  .skillswap-page,
+  .user-profile-container,
+  .swap-requests-page,
+  .chat-page {
+    width: 100% !important;
+    max-width: 100vw !important;
+    margin: 0 auto !important;
+    padding-left: max(1rem, env(safe-area-inset-left)) !important;
+    padding-right: max(1rem, env(safe-area-inset-right)) !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* Center cards and content */
+  .user-card,
+  .request-card,
+  .profile-card,
+  .login-card {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+    max-width: 500px !important; /* Reasonable max width for readability */
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+}
+
+/* iPhone X and newer - Safe area support */
+@media screen and (max-width: 768px) and (display-mode: standalone) {
+  .navbar-container {
+    padding-top: max(0.5rem, env(safe-area-inset-top)) !important;
+    padding-left: max(1rem, env(safe-area-inset-left)) !important;
+    padding-right: max(1rem, env(safe-area-inset-right)) !important;
+  }
+  
+  .page-container {
+    padding-top: max(60px, calc(env(safe-area-inset-top) + 60px)) !important;
+  }
+}
+
+/* iPhone SE and very small screens */
+@media screen and (max-width: 375px) {
+  .skillswap-page,
+  .user-profile-container,
+  .swap-requests-page {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+  
+  .user-card,
+  .request-card,
+  .profile-card {
+    border-radius: 8px !important;
+    margin: 0.25rem auto !important;
+  }
+  
+  .page-title {
+    font-size: 1.25rem !important;
+    text-align: center !important;
+    margin: 0.5rem auto 1rem auto !important;
   }
 }

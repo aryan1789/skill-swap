@@ -1,21 +1,48 @@
 import React from "react";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { getUserBySupabaseId } from "../api/userService";
 
 const ViewProfile: React.FC = () => {
-const userId = new URLSearchParams(window.location.search).get("id") || "";
+    const [searchParams] = useSearchParams();
+    const userId = searchParams.get("id") || "";
+    const [user, setUser] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-const [user,setUser] = useState<any>(null);
+    console.log('ViewProfile: Current URL:', window.location.href);
+    console.log('ViewProfile: All search params:', searchParams.toString());
+    console.log('ViewProfile: userId from URL params:', userId);
+    console.log('ViewProfile: userId type:', typeof userId);
 
     useEffect(() => {
-        getUserBySupabaseId(userId)
-        .then((data) => {
-            setUser(data);
-        })
-        .catch((err) => console.error("Failed to load user:",err));
-    },[userId]);
+        if (!userId || userId === 'undefined' || userId === 'null') {
+            console.error('ViewProfile: Invalid user ID provided in URL:', userId);
+            setError(`Invalid user ID: ${userId}`);
+            setLoading(false);
+            return;
+        }
 
-    if(!user) return <p>Loading Profile...</p>
+        console.log("ViewProfile: Loading user profile for ID:", userId);
+        setLoading(true);
+        setError(null);
+        
+        getUserBySupabaseId(userId)
+            .then((data) => {
+                console.log("ViewProfile: User profile loaded:", data);
+                setUser(data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error("ViewProfile: Failed to load user:", err);
+                setError("Failed to load user profile. Please try again.");
+                setLoading(false);
+            });
+    }, [userId]);
+
+    if (loading) return <div style={{ paddingTop: "70px", padding: "2rem" }}><p>Loading Profile...</p></div>;
+    if (error) return <div style={{ paddingTop: "70px", padding: "2rem" }}><p>Error: {error}</p></div>;
+    if (!user) return <div style={{ paddingTop: "70px", padding: "2rem" }}><p>User not found.</p></div>;
     const joinedDate = new Date(user.createdAt);
 const formattedDate = joinedDate.toLocaleDateString("en-NZ", {
   year: "numeric",

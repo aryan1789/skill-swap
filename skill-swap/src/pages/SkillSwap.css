@@ -1,0 +1,253 @@
+/* SkillSwap.css - Mobile Responsiveness - Single Card Layout */
+
+/* Mobile First - Single column layout */
+@media screen and (max-width: 768px) {
+  .skillswap-page {
+    padding: 60px 1rem 1rem 1rem !important;
+    padding-left: max(1rem, env(safe-area-inset-left)) !important;
+    padding-right: max(1rem, env(safe-area-inset-right)) !important;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    box-sizing: border-box;
+  }
+  
+  .page-title {
+    font-size: 1.75rem !important;
+    text-align: center;
+    margin: 0 auto 1.5rem auto !important;
+    width: 100% !important;
+  }
+  
+  /* Force single column grid - Override ALL grid styles */
+  .user-grid,
+  [style*="display: grid"],
+  [style*="grid-template-columns"],
+  [style*="gridTemplateColumns"] {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    grid-template-columns: none !important;
+    gap: 1rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+  }
+  
+  /* Force cards to be full width and properly contained */
+  .user-card,
+  [style*="background: var(--card-inverse)"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto 0.75rem auto !important;
+    padding: 0.75rem !important;
+    box-sizing: border-box !important;
+    display: block !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    word-wrap: break-word !important;
+  }
+  
+  /* User info section */
+  .user-info {
+    text-align: center !important;
+    margin-bottom: 0.5rem;
+    width: 100% !important;
+  }
+  
+  /* Avatar and image handling */
+  .user-avatar,
+  .user-card img {
+    width: 50px !important;
+    height: 50px !important;
+    margin: 0 auto 0.5rem auto !important;
+    display: block !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+  }
+  
+  /* Text content */
+  .user-name,
+  .user-card h3 {
+    font-size: 1rem !important;
+    margin: 0 0 0.25rem 0 !important;
+    text-align: center !important;
+    word-wrap: break-word !important;
+  }
+  
+  .user-bio,
+  .user-card p {
+    font-size: 0.85rem !important;
+    margin: 0 0 0.25rem 0 !important;
+    text-align: center !important;
+    word-wrap: break-word !important;
+  }
+  
+  /* Skills section */
+  .skill-tags,
+  .skill-list {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.25rem !important;
+    justify-content: center !important;
+    margin: 0.5rem 0 !important;
+  }
+  
+  .skill-tag,
+  .skill-badge {
+    font-size: 0.75rem !important;
+    padding: 0.25rem 0.5rem !important;
+    border-radius: 12px !important;
+    background: var(--primary) !important;
+    color: white !important;
+    white-space: nowrap !important;
+    max-width: 100px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  
+  /* Buttons */
+  .request-button,
+  .user-card button {
+    width: 100% !important;
+    padding: 0.5rem !important;
+    margin-top: 0.5rem !important;
+    border-radius: 6px !important;
+    font-size: 0.85rem !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+    box-sizing: border-box !important;
+    font-weight: 500 !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+  }
+  
+  .user-info {
+    text-align: center !important;
+    margin-bottom: 1rem;
+  }
+  
+  .user-avatar {
+    width: 60px !important;
+    height: 60px !important;
+    margin: 0 auto 0.75rem auto !important;
+    display: block !important;
+  }
+  
+  .user-name {
+    font-size: 1.1rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .user-bio {
+    font-size: 0.9rem !important;
+    margin-bottom: 1rem !important;
+    line-height: 1.4;
+  }
+  
+  .skills-section {
+    margin-bottom: 1rem !important;
+  }
+  
+  .skill-tag {
+    font-size: 0.8rem !important;
+    padding: 0.3rem 0.6rem !important;
+    margin: 0.2rem !important;
+    display: inline-block;
+  }
+  
+  .request-button {
+    width: 100% !important;
+    padding: 0.875rem !important;
+    font-size: 1rem !important;
+    margin-top: 1rem !important;
+    box-sizing: border-box;
+  }
+  
+  .good-match-badge {
+    font-size: 0.8rem !important;
+    padding: 0.25rem 0.6rem !important;
+    position: relative !important;
+    margin-bottom: 0.5rem !important;
+    display: inline-block;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .skillswap-page {
+    padding: 50px 0.5rem 0.5rem 0.5rem !important;
+    padding-left: max(0.5rem, env(safe-area-inset-left)) !important;
+    padding-right: max(0.5rem, env(safe-area-inset-right)) !important;
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom)) !important;
+  }
+  
+  .page-title {
+    font-size: 1.5rem !important;
+    margin: 0 auto 1rem auto !important;
+  }
+  
+  .user-grid {
+    max-width: 100% !important;
+  }
+  
+  .user-card {
+    padding: 0.5rem !important;
+    margin: 0 auto 0.5rem auto !important;
+    border-radius: 8px !important;
+  }
+  
+  .user-avatar,
+  .user-card img {
+    width: 40px !important;
+    height: 40px !important;
+    margin: 0 auto 0.25rem auto !important;
+  }
+  
+  .user-name,
+  .user-card h3 {
+    font-size: 0.9rem !important;
+    margin: 0 0 0.2rem 0 !important;
+  }
+  
+  .user-bio,
+  .user-card p {
+    font-size: 0.8rem !important;
+    margin: 0 0 0.2rem 0 !important;
+  }
+  
+  .skill-tag,
+  .skill-badge {
+    font-size: 0.7rem !important;
+    padding: 0.2rem 0.4rem !important;
+  }
+  
+  .request-button,
+  .user-card button {
+    padding: 0.4rem !important;
+    font-size: 0.8rem !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    margin-top: 0.25rem !important;
+  }
+}
+
+/* iPhone SE and very small screens */
+@media screen and (max-width: 375px) {
+  .skillswap-page {
+    padding: 45px 0.25rem 0.25rem 0.25rem !important;
+  }
+  
+  .user-card {
+    padding: 0.5rem !important;
+    margin: 0 auto 0.5rem auto !important;
+  }
+  
+  .page-title {
+    font-size: 1.25rem !important;
+  }
+}

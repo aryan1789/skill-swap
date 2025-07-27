@@ -1,17 +1,40 @@
-/* Login.css */
+/* UserProfile.css - Updated for better theme support */
 
+.user-profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    min-height: -webkit-fill-available; /* iOS Safari */
+    padding: 80px 20px 20px 20px; /* Top padding for navbar */
+    padding-bottom: max(20px, env(safe-area-inset-bottom)); /* iOS safe area */
+    background: var(--bg);
+    color: var(--text);
+    width: 100%;
+    box-sizing: border-box;
+}
 
 .profile-card {
-    background: var(--card-inverse);
+    background: var(--card);
     padding: 40px;
     border-radius: 16px;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     width: 100%;
-    max-width: 400px;
+    max-width: 500px; /* Slightly wider for better form layout */
     animation: slideUp 0.5s ease-out;
-    color: var(--card-inverse-text);
+    color: var(--text);
 }
 
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 .profile-form {
   display: flex;
@@ -25,21 +48,57 @@
   gap: 6px;
 }
 
-.form-input {
+.form-group label {
+  font-weight: 500;
+  color: var(--text); /* Use theme text color */
+  font-size: 14px;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper .form-input {
+  width: 100%;
   padding: 12px 16px;
-  border: 1px solid #d1d5db;
+  padding-right: 48px; /* Space for icon */
+  border: 2px solid var(--border, #e5e7eb);
   border-radius: 8px;
   font-size: 16px;
-  background-color: var(--card-inverse);
-  transition: border-color 0.2s;
-  color: var(--card-inverse-text);
+  background-color: var(--card);
+  transition: all 0.2s ease;
+  color: var(--text);
   font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+}
+
+.form-input {
+  padding: 12px 16px;
+  border: 2px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: var(--card);
+  transition: all 0.2s ease;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--primary, #3b82f6);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.input-icon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--text);
+  opacity: 0.6;
 }
 
 .form-actions {
@@ -47,9 +106,9 @@
   justify-content: flex-end;
 }
 
-.save-button {
-  padding: 10px 20px;
-  background-color: #3b82f6;
+.save-button, .login-button {
+  padding: 12px 24px;
+  background-color: var(--primary, #3b82f6);
   color: white;
   font-size: 16px;
   font-weight: 500;
@@ -57,56 +116,192 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.save-button:hover {
-  background-color: #2563eb;
+.save-button:hover, .login-button:hover:not(:disabled) {
+  background-color: var(--primary-hover, #2563eb);
 }
 
+.save-button:disabled, .login-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Theme support */
 body, .user-profile-container {
     background: var(--bg);
     color: var(--text);
 }
 
-.user-profile-header {
-    color: var(--text);
+/* Success and error messages */
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background-color: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 8px;
+  color: #DC2626;
+  font-size: 14px;
+  margin-bottom: 20px;
 }
 
-.user-profile-card {
-  background: var(--card);
-  color: var(--text);
-  transition: border-color 0.2s;
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background-color: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  border-radius: 8px;
+  color: #166534;
+  font-size: 14px;
+  margin-bottom: 20px;
 }
 
-.user-profile-card .profile-label {
-  color: var(--text);
+/* Loading spinner */
+.spinner {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid var(--primary, #3b82f6);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
 }
 
-.user-profile-card .profile-value {
-  color: var(--text);
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-.user-profile-card .profile-bio {
-  color: var(--text);
+/* Mobile Responsiveness for UserProfile - Fixed */
+@media screen and (max-width: 768px) {
+  .user-profile-container {
+    padding: 60px 0.5rem 1rem 0.5rem !important;
+    padding-left: max(0.5rem, env(safe-area-inset-left)) !important;
+    padding-right: max(0.5rem, env(safe-area-inset-right)) !important;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 100vh !important;
+    min-height: -webkit-fill-available !important;
+  }
+  
+  .profile-card {
+    padding: 1.5rem !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    border-radius: 12px !important;
+    box-sizing: border-box;
+  }
+  
+  .login-header h1 {
+    font-size: 1.5rem !important;
+    text-align: center !important;
+  }
+  
+  .login-header p {
+    font-size: 0.9rem !important;
+    text-align: center !important;
+  }
+  
+  .form-input, .form-input input, .form-input textarea {
+    font-size: 16px !important;
+    padding: 0.75rem !important;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+  
+  /* Skills section mobile fix */
+  .skills-section {
+    margin-top: 1rem !important;
+  }
+  
+  .skills-section h3 {
+    font-size: 1.1rem !important;
+  }
+  
+  /* Make skill buttons stack better on mobile */
+  .skills-section > div[style*="display: flex"] {
+    gap: 0.5rem !important;
+  }
+  
+  .skills-section button {
+    font-size: 0.8rem !important;
+    padding: 0.5rem 0.75rem !important;
+    margin: 0.25rem !important;
+    min-height: 40px !important;
+  }
 }
 
-.user-profile-card .profile-skill {
-  background: var(--primary, #3b82f6);
-  color: var(--card);
+@media (max-width: 480px) {
+  .user-profile-container {
+    padding: 50px 5px 5px 5px;
+  }
+  
+  .profile-card {
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
+  .login-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .login-header p {
+    font-size: 0.9rem;
+  }
+  
+  .form-group label {
+    font-size: 13px;
+  }
+  
+  .form-input {
+    padding: 12px 14px;
+    font-size: 16px;
+  }
+  
+  .input-wrapper .input-icon {
+    right: 12px;
+  }
+  
+  .login-button {
+    padding: 14px;
+    font-size: 0.9rem;
+  }
+  
+  /* Skills responsive for very small screens */
+  .skill-button {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.7rem;
+  }
 }
 
-.user-profile-card .profile-skill.selected {
-  background: var(--primary-hover, #2563eb);
-  color: var(--card);
+/* Touch-friendly improvements */
+.skill-button-touch {
+  min-height: 44px;
+  touch-action: manipulation;
 }
 
-.user-profile-card .profile-action {
-  background: var(--primary, #3b82f6);
-  color: var(--card);
-  transition: background-color 0.2s ease;
-}
-
-.user-profile-card .profile-action:hover {
-  background: var(--primary-hover, #2563eb);
-  color: var(--card);
+@media (hover: none) and (pointer: coarse) {
+  /* Touch devices */
+  .form-input {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    min-height: 44px;
+  }
+  
+  button {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  
+  .skill-button {
+    min-height: 44px;
+    padding: 0.75rem 1rem !important;
+  }
 }

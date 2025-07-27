@@ -70,65 +70,72 @@ const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
     );
   }
 
-  if (chats.length === 0) {
-    return (
-      <div style={styles.container}>
-        <h3 style={styles.title}>Chats</h3>
-        <div style={styles.emptyState}>
-          No active chats yet. Accept a skill swap request to start chatting!
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div style={styles.container}>
       <h3 style={styles.title}>Chats</h3>
       <div style={styles.chatList}>
-        {chats.map((chat) => (
-          <div
-            key={chat.skillSwapRequestId}
-            style={{
-              ...styles.chatItem,
-              ...(chat.hasUnreadMessages ? styles.unreadChat : {}),
-            }}
-            onClick={() => onSelectChat(chat.skillSwapRequestId, chat.otherUserName)}
-          >
-            <div style={styles.avatarContainer}>
-              <img
-                src={chat.otherUserProfilePicture || "Default_pfp.jpg"}
-                alt={`${chat.otherUserName}'s profile`}
-                style={styles.avatar}
-              />
-              {chat.hasUnreadMessages && <div style={styles.unreadBadge} />}
-            </div>
-            <div style={styles.chatContent}>
-              <div style={styles.chatHeader}>
-                <span 
+        {chats.length === 0 ? (
+          <div style={styles.emptyState}>
+            No chats yet.
+            <br />
+            Accept a skill swap request to start chatting!
+          </div>
+        ) : (
+          chats.map((chat) => (
+            <div
+              key={chat.skillSwapRequestId}
+              style={{
+                ...styles.chatItem,
+                ...(chat.hasUnreadMessages ? styles.unreadChat : {}),
+              }}
+              onClick={() => onSelectChat(chat.skillSwapRequestId, chat.otherUserName)}
+              onMouseEnter={(e) => {
+                if (!chat.hasUnreadMessages) {
+                  e.currentTarget.style.backgroundColor = "var(--card-hover)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!chat.hasUnreadMessages) {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                }
+              }}
+            >
+              <div style={styles.avatarContainer}>
+                <img
+                  src={chat.otherUserProfilePicture || "Default_pfp.jpg"}
+                  alt={`${chat.otherUserName}'s profile`}
+                  style={styles.avatar}
+                />
+                {chat.hasUnreadMessages && <div style={styles.unreadBadge} />}
+              </div>
+              <div style={styles.chatContent}>
+                <div style={styles.chatHeader}>
+                  <span 
+                    style={{
+                      ...styles.userName,
+                      ...(chat.hasUnreadMessages ? styles.unreadText : {}),
+                    }}
+                  >
+                    {chat.otherUserName}
+                  </span>
+                  {chat.lastMessageTime && (
+                    <span style={styles.timestamp}>
+                      {formatTime(chat.lastMessageTime)}
+                    </span>
+                  )}
+                </div>
+                <div 
                   style={{
-                    ...styles.userName,
+                    ...styles.lastMessage,
                     ...(chat.hasUnreadMessages ? styles.unreadText : {}),
                   }}
                 >
-                  {chat.otherUserName}
-                </span>
-                {chat.lastMessageTime && (
-                  <span style={styles.timestamp}>
-                    {formatTime(chat.lastMessageTime)}
-                  </span>
-                )}
-              </div>
-              <div 
-                style={{
-                  ...styles.lastMessage,
-                  ...(chat.hasUnreadMessages ? styles.unreadText : {}),
-                }}
-              >
-                {chat.lastMessage || "No messages yet"}
+                  {chat.lastMessage || "No messages yet"}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );
@@ -139,22 +146,23 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: "100%",
     maxWidth: "400px",
     height: "100%",
-    backgroundColor: "var(--card-inverse)",
-    borderRight: "1px solid #e1e5e9",
+    backgroundColor: "var(--card)",
+    borderRight: "2px solid var(--border)",
     display: "flex",
     flexDirection: "column",
   },
   title: {
     padding: "1rem",
     margin: 0,
-    borderBottom: "1px solid #e1e5e9",
-    color: "var(--card-inverse-text)",
+    borderBottom: "2px solid var(--border)",
+    color: "var(--text)",
     fontWeight: 600,
+    backgroundColor: "var(--card)",
   },
   loading: {
     padding: "2rem",
     textAlign: "center",
-    color: "#6c757d",
+    color: "var(--text-secondary)",
   },
   error: {
     padding: "2rem",
@@ -164,7 +172,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   emptyState: {
     padding: "2rem",
     textAlign: "center",
-    color: "#6c757d",
+    color: "var(--text-secondary)",
     lineHeight: 1.5,
   },
   chatList: {
@@ -173,15 +181,17 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   chatItem: {
     display: "flex",
-    padding: "0.75rem 1rem",
+    padding: "1rem",
     cursor: "pointer",
-    borderBottom: "1px solid #f8f9fa",
-    transition: "background-color 0.2s",
+    borderBottom: "1px solid var(--border)",
+    transition: "all 0.2s",
     alignItems: "center",
     gap: "0.75rem",
+    position: "relative",
   },
   unreadChat: {
-    backgroundColor: "#f8f9ff",
+    backgroundColor: "var(--card-hover)",
+    borderLeft: "4px solid #0077cc",
   },
   unreadText: {
     fontWeight: "bold",
@@ -195,16 +205,17 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: "48px",
     borderRadius: "50%",
     objectFit: "cover",
+    border: "2px solid var(--border)",
   },
   unreadBadge: {
     position: "absolute",
-    top: 0,
-    right: 0,
-    width: "12px",
-    height: "12px",
+    top: -2,
+    right: -2,
+    width: "14px",
+    height: "14px",
     backgroundColor: "#0077cc",
     borderRadius: "50%",
-    border: "2px solid white",
+    border: "2px solid var(--card)",
   },
   chatContent: {
     flex: 1,
@@ -218,16 +229,16 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   userName: {
     fontWeight: 600,
-    color: "var(--card-inverse-text)",
+    color: "var(--text)",
     fontSize: "0.95rem",
   },
   timestamp: {
     fontSize: "0.75rem",
-    color: "#6c757d",
+    color: "var(--text-secondary)",
   },
   lastMessage: {
     fontSize: "0.85rem",
-    color: "#6c757d",
+    color: "var(--text-secondary)",
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",

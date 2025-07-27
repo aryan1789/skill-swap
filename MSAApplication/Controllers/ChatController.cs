@@ -81,6 +81,13 @@ namespace MSAApplication.Controllers
 
                     var otherUser = request.RequesterId == userId ? request.TargetUser : request.Requester;
 
+                    // Debug logging
+                    Console.WriteLine($"DEBUG: ChatPreview for user {userId}");
+                    Console.WriteLine($"  Request ID: {request.Id}");
+                    Console.WriteLine($"  Requester ID: {request.RequesterId}, Name: {request.Requester?.Name}");
+                    Console.WriteLine($"  Target ID: {request.TargetUserId}, Name: {request.TargetUser?.Name}");
+                    Console.WriteLine($"  Other User ID: {otherUser?.Id}, Name: {otherUser?.Name}");
+
                     chatPreviews.Add(new
                     {
                         skillSwapRequestId = request.Id,

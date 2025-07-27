@@ -60,21 +60,36 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         const handleNewMessage = (message: ChatMessage) => {
           if (message.skillSwapRequestId === skillSwapRequestId) {
             setMessages(prev => {
+              // Normalize GUIDs for comparison
+              const normalizedSenderId = message.senderId?.toLowerCase().replace(/-/g, '');
+              const normalizedUserGuid = userGuid?.toLowerCase().replace(/-/g, '');
+              
               // If this is from the current user, replace any temporary message
-              if (message.senderId === userGuid) {
-                // Remove temporary messages with the same content
+              if (normalizedSenderId === normalizedUserGuid) {
+                // Remove temporary messages with the same content (more efficient check)
                 const withoutTemp = prev.filter(msg => 
-                  !(msg.id.startsWith('temp-') && msg.content === message.content)
+                  !(msg.id.startsWith('temp-') && msg.content === message.content && msg.senderId === userGuid)
                 );
-                return [...withoutTemp, message];
+                // Only add if we don't already have this exact message
+                const hasMessage = withoutTemp.some(msg => msg.id === message.id);
+                if (!hasMessage) {
+                  return [...withoutTemp, message];
+                }
+                return withoutTemp;
               } else {
-                // For other users, just add the message
-                return [...prev, message];
+                // For other users, check if we already have this message
+                const hasMessage = prev.some(msg => msg.id === message.id);
+                if (!hasMessage) {
+                  return [...prev, message];
+                }
+                return prev;
               }
             });
             
             // Mark as read if it's not from current user
-            if (message.senderId !== userGuid) {
+            const normalizedSenderId = message.senderId?.toLowerCase().replace(/-/g, '');
+            const normalizedUserGuid = userGuid?.toLowerCase().replace(/-/g, '');
+            if (normalizedSenderId !== normalizedUserGuid) {
               markMessagesAsRead(skillSwapRequestId, userGuid);
             }
           }
@@ -105,6 +120,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     if (!newMessage.trim() || !userGuid || sending) return;
 
     const messageContent = newMessage.trim();
+    const tempId = `temp-${Date.now()}`;
     setNewMessage(""); // Clear input immediately
 
     try {
@@ -112,10 +128,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       
       // Create a temporary message for immediate display
       const tempMessage: ChatMessage = {
-        id: `temp-${Date.now()}`, // Temporary ID
+        id: tempId,
         skillSwapRequestId,
         senderId: userGuid,
-        senderName: "You", // Will be updated when real message comes back
+        senderName: "You",
         content: messageContent,
         sentAt: new Date().toISOString(),
         isRead: true
@@ -127,12 +143,14 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       // Send via SignalR
       await chatConnection.sendMessage(skillSwapRequestId, userGuid, messageContent);
       
+      // Message sent successfully - the real message will come back via SignalR
+      
     } catch (err) {
       console.error("Failed to send message:", err);
       setError("Failed to send message");
       setNewMessage(messageContent); // Restore message on error
       // Remove the temporary message on error
-      setMessages(prev => prev.filter(msg => !msg.id.startsWith('temp-')));
+      setMessages(prev => prev.filter(msg => msg.id !== tempId));
     } finally {
       setSending(false);
     }
@@ -184,31 +202,37 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
             No messages yet. Start the conversation!
           </div>
         ) : (
-          messages.map((message) => (
-            <div
-              key={message.id}
-              style={{
-                ...styles.messageWrapper,
-                ...(message.senderId === userGuid
-                  ? styles.ownMessageWrapper
-                  : styles.otherMessageWrapper),
-              }}
-            >
+          messages.map((message) => {
+            // Normalize both IDs for comparison (remove dashes, convert to lowercase)
+            const normalizedSenderId = message.senderId?.toLowerCase().replace(/-/g, '');
+            const normalizedUserGuid = userGuid?.toLowerCase().replace(/-/g, '');
+            const isOwnMessage = normalizedSenderId === normalizedUserGuid;
+            return (
               <div
+                key={message.id}
                 style={{
-                  ...styles.message,
-                  ...(message.senderId === userGuid
-                    ? styles.ownMessage
-                    : styles.otherMessage),
+                  ...styles.messageWrapper,
+                  ...(isOwnMessage
+                    ? styles.ownMessageWrapper
+                    : styles.otherMessageWrapper),
                 }}
               >
-                <div style={styles.messageContent}>{message.content}</div>
-                <div style={styles.messageTime}>
-                  {formatTime(message.sentAt)}
+                <div
+                  style={{
+                    ...styles.message,
+                    ...(isOwnMessage
+                      ? styles.ownMessage
+                      : styles.otherMessage),
+                  }}
+                >
+                  <div style={styles.messageContent}>{message.content}</div>
+                  <div style={styles.messageTime}>
+                    {formatTime(message.sentAt)}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
         <div ref={messagesEndRef} />
       </div>
@@ -216,7 +240,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       {/* Input */}
       <div style={styles.inputContainer}>
         <textarea
-          style={styles.messageInput}
+          style={{
+            ...styles.messageInput,
+            borderColor: newMessage ? "#0077cc" : "var(--border)",
+          }}
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyPress={handleKeyPress}
@@ -245,19 +272,20 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: "100%",
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "var(--card-inverse)",
+    backgroundColor: "var(--card)", // Use normal card color
   },
   header: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     padding: "1rem",
-    borderBottom: "1px solid #e1e5e9",
-    backgroundColor: "var(--card-inverse)",
+    borderBottom: "2px solid var(--border)",
+    backgroundColor: "var(--card)",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
   },
   headerTitle: {
     margin: 0,
-    color: "var(--card-inverse-text)",
+    color: "var(--text)",
     fontWeight: 600,
   },
   closeButton: {
@@ -265,7 +293,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: "none",
     fontSize: "1.5rem",
     cursor: "pointer",
-    color: "#6c757d",
+    color: "var(--text-secondary)",
     padding: "0.25rem",
     lineHeight: 1,
   },
@@ -274,7 +302,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
-    color: "#6c757d",
+    color: "var(--text-secondary)",
   },
   error: {
     padding: "1rem",
@@ -297,7 +325,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
-    color: "#6c757d",
+    color: "var(--text-secondary)",
     fontStyle: "italic",
   },
   messageWrapper: {
@@ -337,29 +365,34 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     gap: "0.5rem",
     padding: "1rem",
-    borderTop: "1px solid #e1e5e9",
-    backgroundColor: "var(--card-inverse)",
+    borderTop: "1px solid var(--border)",
+    backgroundColor: "var(--card)", // Use normal card color
+    minHeight: "80px", // Ensure input area is always visible
   },
   messageInput: {
     flex: 1,
     padding: "0.75rem",
-    border: "1px solid #e1e5e9",
+    border: "2px solid var(--border)",
     borderRadius: "1rem",
     outline: "none",
     resize: "none",
     fontFamily: "inherit",
     fontSize: "0.9rem",
     maxHeight: "100px",
+    backgroundColor: "var(--card)",
+    color: "var(--text)",
+    transition: "border-color 0.2s",
   },
   sendButton: {
     padding: "0.75rem 1.5rem",
     backgroundColor: "#0077cc",
     color: "white",
-    border: "none",
+    border: "2px solid #0077cc",
     borderRadius: "1rem",
     cursor: "pointer",
     fontWeight: 600,
     fontSize: "0.9rem",
+    transition: "all 0.2s",
   },
   sendButtonDisabled: {
     backgroundColor: "#ccc",

@@ -9,7 +9,10 @@ body, .swap-requests-page {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem 1rem;
+  padding-bottom: max(2rem, env(safe-area-inset-bottom));
   font-family: Inter, sans-serif;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .swap-requests-page h2 {
@@ -80,7 +83,7 @@ body, .swap-requests-page {
 
 .accept-btn {
   background: #16a34a;
-  color: #fff;
+  color: white;
   border: none;
   border-radius: 8px;
   padding: 0.5rem 1.2rem;
@@ -96,7 +99,7 @@ body, .swap-requests-page {
 
 .decline-btn {
   background: #dc2626;
-  color: #fff;
+  color: white;
   border: none;
   border-radius: 8px;
   padding: 0.5rem 1.2rem;
@@ -108,6 +111,25 @@ body, .swap-requests-page {
 
 .decline-btn:hover {
   background: #b91c1c;
+}
+
+.chat-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chat-btn:hover {
+  background: var(--primary-hover);
 }
 
 .status {
@@ -219,4 +241,101 @@ body, .swap-requests-page {
 .kebab-dropdown button:hover {
   background: var(--primary, #e0f2ff);
   color: var(--primary-hover, #0077cc);
+}
+
+/* Mobile Responsiveness for SwapRequests - Fixed */
+@media screen and (max-width: 768px) {
+  .swap-requests-3col {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    grid-template-columns: none !important;
+    gap: 1rem;
+    padding: 1rem 0.5rem !important;
+    padding-left: max(0.5rem, env(safe-area-inset-left)) !important;
+    padding-right: max(0.5rem, env(safe-area-inset-right)) !important;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  
+  .swap-requests-page {
+    padding: 60px 0.5rem 1rem 0.5rem !important;
+    padding-left: max(0.5rem, env(safe-area-inset-left)) !important;
+    padding-right: max(0.5rem, env(safe-area-inset-right)) !important;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+  }
+  
+  .column {
+    width: 100% !important;
+    max-width: 500px !important;
+    margin: 0 auto 1.5rem auto !important;
+  }
+  
+  .request-card {
+    display: block !important;
+    width: 100% !important;
+    padding: 1rem !important;
+    margin: 0 auto 1rem auto !important;
+    box-sizing: border-box;
+    border-radius: 12px !important;
+  }
+  
+  .avatar {
+    width: 48px !important;
+    height: 48px !important;
+    margin: 0 auto 0.5rem auto !important;
+    display: block !important;
+  }
+  
+  .body {
+    text-align: center !important;
+    width: 100% !important;
+  }
+  
+  .buttons-row {
+    display: block !important;
+    width: 100% !important;
+  }
+  
+  .accept-btn,
+  .decline-btn,
+  .chat-btn {
+    width: 100% !important;
+    margin-bottom: 0.5rem !important;
+    padding: 0.75rem !important;
+    font-size: 0.9rem !important;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 480px) {
+  .swap-requests-page h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .request-card {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .avatar {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .buttons-row {
+    gap: 0.5rem;
+  }
+  
+  .accept-btn,
+  .decline-btn,
+  .chat-btn {
+    font-size: 0.85rem;
+    padding: 0.6rem;
+  }
 }

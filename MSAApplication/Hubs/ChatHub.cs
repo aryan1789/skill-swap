@@ -102,11 +102,8 @@ namespace MSAApplication.Hubs
                     isRead = chatMessage.IsRead
                 };
 
-                // Send message to all users in this chat EXCEPT the sender
-                await Clients.GroupExcept($"chat_{skillSwapRequestId}", Context.ConnectionId).SendAsync("ReceiveMessage", messageData);
-                
-                // Send confirmation to sender
-                await Clients.Caller.SendAsync("ReceiveMessage", messageData);
+                // Send message to all users in this chat (including sender for consistency)
+                await Clients.Group($"chat_{skillSwapRequestId}").SendAsync("ReceiveMessage", messageData);
             }
             catch (Exception ex)
             {

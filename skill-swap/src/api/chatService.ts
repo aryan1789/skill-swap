@@ -29,7 +29,7 @@ export const getChatMessages = async (skillSwapRequestId: string, userId: string
   return response.json();
 };
 
-// Get chat previews for a user
+//
 export const getChatPreviews = async (userId: string): Promise<ChatPreview[]> => {
   const response = await fetch(`${API_BASE_URL}/chat/previews/${userId}`);
   if (!response.ok) {

@@ -22,7 +22,9 @@ export const useGlobalNotifications = () => {
     const handleGlobalMessage = (message: ChatMessage) => {
       // Only trigger notification if user is NOT on the chat page
       // and the message is not from the current user
-      if (location.pathname !== '/chat' && message.senderId !== userGuid) {
+      const normalizedSenderId = message.senderId?.toLowerCase().replace(/-/g, '');
+      const normalizedUserGuid = userGuid?.toLowerCase().replace(/-/g, '');
+      if (location.pathname !== '/chat' && normalizedSenderId !== normalizedUserGuid) {
         dispatch(newMessageReceived());
       }
     };

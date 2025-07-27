@@ -6,11 +6,15 @@ body, .login-container {
 
 .login-container {
     min-height: 100vh;
+    min-height: -webkit-fill-available; /* iOS Safari */
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 80px 20px 20px 20px; /* Top padding for navbar */
+    padding-bottom: max(20px, env(safe-area-inset-bottom)); /* iOS safe area */
     background: var(--bg);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .login-card {
@@ -216,16 +220,102 @@ body, .login-container {
 }
 
 /* Responsive design */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .login-container {
-        padding: 16px;
+        padding: 60px 16px 16px 16px; /* Account for navbar height */
+        padding-left: max(16px, env(safe-area-inset-left));
+        padding-right: max(16px, env(safe-area-inset-right));
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+        align-items: center;
+        justify-content: center;
     }
     
     .login-card {
-        padding: 24px;
+        padding: 32px 24px;
+        max-width: 100%;
+        width: 100%;
+        margin: 0 auto;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .login-header {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+    
+    .login-header h1 {
+        font-size: 26px;
+        margin-bottom: 8px;
+    }
+    
+    .form-group input, .login-button {
+        font-size: 16px; /* Prevent zoom on iOS */
+        min-height: 48px; /* Better touch targets */
+        border-radius: 8px;
+    }
+    
+    .login-button {
+        width: 100%;
+        margin-top: 8px;
+        font-weight: 600;
+    }
+    
+    .password-toggle {
+        min-height: 44px !important;
+        min-width: 44px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 50px 12px 12px 12px;
+        padding-left: max(12px, env(safe-area-inset-left));
+        padding-right: max(12px, env(safe-area-inset-right));
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+    }
+    
+    .login-card {
+        padding: 24px 16px;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
     }
     
     .login-header h1 {
         font-size: 24px;
+    }
+    
+    .login-header p {
+        font-size: 14px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        font-size: 14px;
+        margin-bottom: 6px;
+        display: block;
+    }
+}
+
+/* iPhone SE and very small screens */
+@media (max-width: 375px) {
+    .login-container {
+        padding: 45px 8px 8px 8px;
+    }
+    
+    .login-card {
+        padding: 20px 12px;
+        border-radius: 8px;
+    }
+    
+    .login-header h1 {
+        font-size: 22px;
     }
 }
